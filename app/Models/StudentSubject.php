@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class StudentSubject extends Model
+{
+    protected $table = 'students_subjects';
+
+    protected $fillable = ['student_id', 'subject_id'];
+
+    public $timestamps = false;
+}
