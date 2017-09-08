@@ -15,7 +15,7 @@ class StudentTableSeeder extends Seeder
     {
         $faker = Factory::create();
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $student = new Student();
             $student->username = $faker->userName;
             $student->password = bcrypt('123456');

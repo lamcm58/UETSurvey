@@ -20,6 +20,8 @@ class CreateSubjectsTable extends Migration
             $table->string('subject_class_code', 15);
             $table->string('student_quantity', 4);
             $table->string('teacher_name', 300);
+            $table->integer('category_id', false, true);
+            $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

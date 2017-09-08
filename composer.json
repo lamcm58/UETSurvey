@@ -23,6 +23,7 @@
             "App\\": "app/"
         },
         "files": [
+            "app/Function/pageFunction.php",
             "app/Function/functions.php"
         ]
 

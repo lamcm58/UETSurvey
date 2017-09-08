@@ -40,7 +40,8 @@ class SubjectController extends Controller
                                 'name' => $v['name'],
                                 'subject_class_code' => $v['subject_class_code'],
                                 'student_quantity' => $v['student_quantity'],
-                                'teacher_name' => $v['teacher_name']
+                                'teacher_name' => $v['teacher_name'],
+                                'category_id' => getCategoryId($v['category'])
                             ];
                         }
                     }
@@ -70,7 +71,7 @@ class SubjectController extends Controller
         return view('admin.subject.detail', compact('subject','selected', 'surveys', 'students'));
     }
 
-    public function addSurvey($id, Request $request)
+    /*public function addSurvey($id, Request $request)
     {
         $survey_id = $request->survey_id;
         $item = SubjectSurvey::where('subject_id', $id)
@@ -85,5 +86,5 @@ class SubjectController extends Controller
             SubjectSurvey::create($data);
             return back()->with('success', 'Add survey successfully.');
         }
-    }
+    }*/
 }

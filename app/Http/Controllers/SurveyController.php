@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Question;
 use App\Models\Subject;
 use App\Models\Survey;
@@ -11,6 +12,7 @@ use App\Models\StudentSubject;
 use App\Models\SurveyDetail;
 use App\Models\StudentSurvey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SurveyController extends Controller
 {
@@ -112,62 +114,23 @@ class SurveyController extends Controller
         $item = Survey::find($id);
         $questions = Question::where('survey_id', $id)->get();
         $students = Student::all();
-        $subjects = Subject::all();
+        $categories = Category::all();
 
-        return view('admin.survey.preview', compact('item', 'questions','students', 'subjects'));
+        return view('admin.survey.preview', compact('item', 'questions','students', 'categories'));
     }
 
-    public function grantUser(Request $request, $id)
+    public function grantCategory(Request $request, $id)
     {
-        $student_id = $request->student_id;
-        $item = StudentSurvey::where('survey_id', $id)
-                    ->where('student_id', $student_id)
-                    ->get();
-
-        if (count($item) > 0) {
-            return back()->with('error', 'Curent survey has been added to this student.');
-        } else {
-            $data = [];
-            $data['survey_id'] = $id;
-            $data['student_id'] = $student_id;
-            StudentSurvey::create($data);
-
-            $subject_details = StudentSubject::where('student_id', $student_id)
-                    ->get();
-            foreach ($subject_details as $subject_detail) {
-                $details = SurveyDetail::where('survey_id', $id)
-                    ->where('subject_id', $subject_detail->subject_id)
-                    ->where('student_id', $student_id)
-                    ->get();
-
-                if (count($details) > 0) {
-                    foreach ($details as $detail) {
-                        $detail->delete();
-                    }
-                }
-
-                $data = [];
-                $data['survey_id'] = $id;
-                $data['subject_id'] = $subject_detail->subject_id;
-                $data['student_id'] = $student_id;
-                SurveyDetail::create($data);
-            }
-            return back()->with('success', 'Add survey successfully.');
-        }
-    }
-
-    public function grantSubject(Request $request, $id)
-    {
-        $subject_id = $request->subject_id;
-        $subjects = SubjectSurvey::where('survey_id', $id)
-                    ->where('subject_id', $subject_id)
+        $category_id = $request->cat_id;
+        $categories = DB::table('categories_surveys')->where('survey_id', $id)
+                    ->where('category_id', $category_id)
                     ->get();
         $details = SurveyDetail::where('survey_id', $id)
-                    ->where('subject_id', $subject_id)
+                    ->where('subject_id', $category_id)
                     ->get();
 
-        if (count($subjects) > 0) {
-            return back()->with('error', 'Curent survey has been added to this subject.');
+        if (count($categories) > 0) {
+            return back()->with('error', 'Curent survey has been added to all subject.');
         } else {
             if (count($details) > 0) {
                 foreach ($details as $detail) {
@@ -176,19 +139,21 @@ class SurveyController extends Controller
             }
 
             $data = [];
-            $data['subject_id'] = $subject_id;
+            $data['category_id'] = $category_id;
             $data['survey_id'] = $id;
-            SubjectSurvey::create($data);
+            DB::table('categories_surveys')->insert($data);
 
-            $subject_detail = StudentSubject::where('subject_id', $subject_id)->get();
+            $subjects = Subject::where('category_id', $category_id)->get();
+            foreach ($subjects as $subject) {
+                $items = StudentSubject::where('subject_id', $subject->id)->get();
+                foreach ($items as $item) {
+                    $dat = [];
+                    $dat['survey_id'] = $id;
+                    $dat['subject_id'] = $item->subject_id;
+                    $dat['student_id'] = $item->student_id;
 
-            foreach ($subject_detail as $value) {
-                $data = [];
-                $data['survey_id'] = $id;
-                $data['subject_id'] = $subject_id;
-                $data['student_id'] = $value->student_id;
-
-                SurveyDetail::create($data);
+                    SurveyDetail::create($dat);
+                }
             }
             return back()->with('success', 'Add survey successfully.');
         }

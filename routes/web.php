@@ -16,6 +16,9 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
     Route::get('/', ['as' => 'admin.home', 'uses' => 'HomeController@index']);
     Route::get('/home', ['as' => 'admin.home', 'uses' => 'HomeController@index']);
 
+    Route::get('/category/{id}', ['as' => 'category.view', 'uses' => 'PageController@viewCate']);
+    Route::post('/category/{id}/addSurvey', ['as' => 'category.addSurvey', 'uses' => 'PageController@addSurvey']);
+
     Route::group(['prefix' => 'subject'], function () {
         Route::get('/list', ['as' => 'subject.list', 'uses' => 'SubjectController@index']);
         Route::get('/add', ['as' => 'subject.add', 'uses' => 'SubjectController@add']);
@@ -30,8 +33,7 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::post('/importFile', ['as' => 'survey.import', 'uses' => 'SurveyController@importFile']);
         Route::post('/create', ['as' => 'survey.create', 'uses' => 'SurveyController@create']);
         Route::get('/{id}/preview', ['as' => 'survey.preview', 'uses' => 'SurveyController@preview']);
-        Route::post('/{id}/grantUser', ['as' => 'survey.grantUser', 'uses' => 'SurveyController@grantUser']);
-        Route::post('/{id}/grantSubject', ['as' => 'survey.grantSubject', 'uses' => 'SurveyController@grantSubject']);
+        Route::post('/{id}/grantSubject', ['as' => 'survey.grantCategory', 'uses' => 'SurveyController@grantCategory']);
     });
     
 });

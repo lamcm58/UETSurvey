@@ -1,16 +1,15 @@
 <?php
-
-use Illuminate\Support\Facades\Auth;
-use App\Models\StudentSubject;
+use App\Models\Category;
 
 /**
- * summary
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 9/6/2017
+ * Time: 10:40 PM
  */
-class ListProperty {
-	public static function getListSubjects()
-	{
-		$data = StudentSubject::join('subjects', 'students_subjects.subject_id', '=', 'subjects.id')->where('student_id', Auth::user()->id)->get();
 
-		return $data;
-	}
+function getCategoryId($cate_name) {
+    $category = Category::where('category_name', '=', trans("translation.$cate_name"))->first();
+
+    return $category->id;
 }

@@ -32,19 +32,14 @@
                                         <input type="file" name="text_file" class="form-control" />
                                     </div>
                                     <button type="submit" class="btn btn-primary">Thêm</button>
-                                    {{-- <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="all"> Áp dụng cho tất cả các lớp môn học
-                                        </label>
-                                    </div> --}}
                                 </div>
 
                             </form>
-                            <div class="clearfix"></div>
+                            {{--<div class="clearfix"></div>--}}
                         </div>
 
                         {{--Thêm thủ công--}}
-                        <div class="x_content">
+                        {{--<div class="x_content">
                             <h2>Thêm bằng tay</h2>
                             <br />
                             <form class="form-horizontal form-label-left" action="{{ route('survey.create') }}" method="POST" enctype="multipart/form-data">
@@ -55,23 +50,6 @@
                                         <input type="text" name="survey_name" class="form-control" placeholder="Tên survey" value="{{ old('survey_name') }}">
                                     </div>
                                 </div>
-                                {{-- <div class="form-group">
-                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Môn học<span class="required">*</span>
-                                    </label>
-                                    <div class="col-md-9 col-sm-9 col-xs-12">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" name="check_all" id="check"> Áp dụng cho tất cả các lớp môn học
-                                            </label>
-                                        </div>
-                                        <select name="subject_id" id="subject_id" class="form-control">
-                                            <option value="">Chọn lớp môn học</option>
-                                            @foreach($subjects as $subject)
-                                                <option value="{{ $subject->id }}">{{ $subject->subject_class_code }} - {{ $subject->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> --}}
                                 <div class="form-group">
                                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Ngày hết hạn<span class="required">*</span>
                                     </label>
@@ -93,7 +71,7 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                        </div>--}}
                     </div>
                 </div>
             </div>

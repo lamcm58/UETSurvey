@@ -24,42 +24,24 @@
                         <div class="x_title">
                             <h2>Phân quyền người được phép làm khảo sát</h2>
                             <br/>
-                            
-                            <div class="x_panel">
-                            <h4>Chọn theo lớp môn học</h4>
-                            <form action="{{ route('survey.grantSubject', $item->id) }}" method="post">
-                            {{ csrf_field() }}
-                                <div class="col-md-4">
-                                    <select name="subject_id" id="" class="form-control">
-                                        <option value="">Chọn lớp môn học</option>
-                                        @foreach($subjects as $subject)
-                                        <option value="{{ $subject->id }}">{{ $subject->subject_class_code}} - {{$subject->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <button type="submit" class="btn btn-primary">Thêm</button>
-                                </div>
-                            </form>
-                            </div>
-                            <div class="x_panel">
-                            <h4>Chọn theo sinh viên</h4>
-                            <form action="{{ route('survey.grantUser', $item->id) }}" method="post">
-                            {{ csrf_field() }}
-                                <div class="col-md-4">
-                                    <select name="student_id" id="" class="form-control" required="true">
-                                        <option value="">Chọn sinh viên</option>
-                                        @foreach($students as $student)
-                                        <option value="{{ $student->id }}">{{ $student->student_code}} - {{$student->full_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <button type="submit" class="btn btn-primary">Thêm</button>
-                                </div>
-                            </form>
-                            </div>
 
+                            <div class="x_panel">
+                            <h4>Chọn theo khoa</h4>
+                            <form action="{{ route('survey.grantCategory', $item->id) }}" method="post">
+                            {{ csrf_field() }}
+                                <div class="col-md-4">
+                                    <select name="cat_id" id="" class="form-control">
+                                        <option value="">Chọn khoa</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->category_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary">Thêm</button>
+                                </div>
+                            </form>
+                            </div>
                             
                             <div class="clearfix"></div>
                         </div>

@@ -34,12 +34,23 @@
                     </li>
                     <li>
                         <a>
+                            <i class="fa fa-newspaper-o"></i> Các khoa
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <?php $categories = \App\Models\Category::listCategory();?>
+                            @foreach($categories as $item)
+                                <li><a href="{{ route('category.view', $item->id) }}">{{ $item->category_name }}</a></li>
+                            @endforeach
+                        </ul>
+                    </li>
+                    <li>
+                        <a>
                             <i class="fa fa-outdent"></i> Quản lý môn học
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
                             <li><a href="{{ route('subject.add') }}">Thêm môn học</a></li>
-                            <li><a href="{{ route('subject.list') }}">Danh sách môn học</a></li>
                         </ul>
                     </li>
                     <li>

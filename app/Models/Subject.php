@@ -12,6 +12,11 @@ class Subject extends Model
 
     public $timestamps = true;
 
+    public function Category()
+    {
+        return $this->belongsTo('App\Models\Category');
+    }
+
     public function StudentSubject() {
         return $this->hasMany('App\Models\StudentSubject');
     }
