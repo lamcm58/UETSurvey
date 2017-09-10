@@ -10,7 +10,6 @@ use App\Models\SubjectSurvey;
 use App\Models\Student;
 use App\Models\StudentSubject;
 use App\Models\SurveyDetail;
-use App\Models\StudentSurvey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -56,17 +55,6 @@ class SurveyController extends Controller
 
                     Question::create($questions);
                 }
-
-                // update subject
-                // if ($request->all == "on") {
-                //     $subjects = Subject::all();
-                //     foreach ($subjects as $subject) {
-                //         $data = [];
-                //         $data['subject_id'] = $subject->id;
-                //         $data['survey_id'] = $id;
-                //         SubjectSurvey::create($data);
-                //     }
-                // }
             }
             return back()->with('success', 'Add survey successful.');
         }
@@ -88,21 +76,6 @@ class SurveyController extends Controller
         $save = Survey::create($surveys);
 
         if ($save) {
-            // $id = $save->id;
-            // if ($request->check_all == "on") {
-            //     $subjects = Subject::all();
-            //     foreach ($subjects as $subject) {
-            //         $data = [];
-            //         $data['subject_id'] = $subject->id;
-            //         $data['survey_id'] = $id;
-            //         SubjectSurvey::create($data);
-            //     }
-            // } elseif (is_numeric($request->subject_id)) {
-            //     $data = [];
-            //     $data['subject_id'] = $request->subject_id;
-            //     $data['survey_id'] = $id;
-            //     SubjectSurvey::create($data);
-            // }
             return back()->with('success', 'Add survey successful.');
         } else {
             return back()->with('error', 'Please Check your file, Something is wrong there.');
@@ -145,6 +118,8 @@ class SurveyController extends Controller
 
             $subjects = Subject::where('category_id', $category_id)->get();
             foreach ($subjects as $subject) {
+                SubjectSurvey::create(['subject_id' => $subject->id, 'survey_id' => $id]);
+
                 $items = StudentSubject::where('subject_id', $subject->id)->get();
                 foreach ($items as $item) {
                     $dat = [];
@@ -157,5 +132,13 @@ class SurveyController extends Controller
             }
             return back()->with('success', 'Add survey successfully.');
         }
+    }
+
+    public function statistic($id)
+    {
+        $subjects = SubjectSurvey::join('subjects', 'subjects.id', '=', 'subjects_surveys.subject_id')
+                        ->where('survey_id', $id)->paginate(20);
+
+        return view('admin.survey.statistic', compact('subjects'));
     }
 }

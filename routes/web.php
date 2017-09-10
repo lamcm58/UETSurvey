@@ -34,6 +34,7 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::post('/create', ['as' => 'survey.create', 'uses' => 'SurveyController@create']);
         Route::get('/{id}/preview', ['as' => 'survey.preview', 'uses' => 'SurveyController@preview']);
         Route::post('/{id}/grantSubject', ['as' => 'survey.grantCategory', 'uses' => 'SurveyController@grantCategory']);
+        Route::get('/{id}/statistic', ['as' => 'survey.statistic', 'uses' => 'SurveyController@statistic']);
     });
     
 });

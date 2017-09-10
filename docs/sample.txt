@@ -1,6 +1,6 @@
 ﻿SS0001;
 Khảo sát môn học cuối học kỳ;
-01/09/2017;
+09/01/2017;
 [SS0001_01-1-Phòng học đáp ứng yêu cầu của môn học- ];
 [SS0001_02-1-Các trang thiết bị tại giảng đường đáp ứng yêu cầu giảng dạy và học tập- ];
 [SS0001_03-1-Bạn được hỗ trợ kịp thời trong quá trình học môn này- ];

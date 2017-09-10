@@ -18,6 +18,7 @@ class CreateSurveysDetailsTable extends Migration
             $table->integer('survey_id', false, true);
             $table->integer('subject_id', false, true)->default(0);
             $table->integer('student_id', false, true)->default(0);
+            $table->tinyInteger('is_done', false, true)->default(0);
         });
     }
 

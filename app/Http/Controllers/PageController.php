@@ -70,6 +70,15 @@ class PageController extends Controller
             $items['student_answers'] = serialize($data);
 
             Result::create($items);
+
+            // update survey_detail property
+            $result = SurveyDetail::where('survey_id', $id)
+                                    ->where('subject_id', $subject_id)
+                                    ->where('student_id', Auth::id())
+                                    ->first();
+            $result->is_done = 1;
+            $result->save();
+
             return redirect()->route('subjectDetail', $subject_id)->with('success', 'Thanks for your responses.');
         } else {
             return back()->with('error', 'You need to answer all questions.');
@@ -105,6 +114,7 @@ class PageController extends Controller
                 if ($save) {
                     $subjects = Subject::where('category_id', $id)->get();
                     foreach ($subjects as $subject) {
+                        SubjectSurvey::create(['subject_id' => $subject->id, 'survey_id' => $survey_id]);
                         $items = StudentSubject::where('subject_id', $subject->id)->get();
                         foreach ($items as $item) {
                             $dat = [];

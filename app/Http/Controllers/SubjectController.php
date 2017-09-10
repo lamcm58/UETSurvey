@@ -71,20 +71,4 @@ class SubjectController extends Controller
         return view('admin.subject.detail', compact('subject','selected', 'surveys', 'students'));
     }
 
-    /*public function addSurvey($id, Request $request)
-    {
-        $survey_id = $request->survey_id;
-        $item = SubjectSurvey::where('subject_id', $id)
-                    ->where('survey_id', $survey_id)
-                    ->first();
-        if (isset($item)) {
-            return back()->with('error', 'Current survey has been added to this subject.');
-        } else {
-            $data = [];
-            $data['subject_id'] = $id;
-            $data['survey_id'] = $survey_id;
-            SubjectSurvey::create($data);
-            return back()->with('success', 'Add survey successfully.');
-        }
-    }*/
 }
