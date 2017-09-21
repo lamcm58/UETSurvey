@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Question;
+use App\Models\Result;
 use App\Models\Subject;
 use App\Models\Survey;
 use App\Models\SubjectSurvey;
@@ -140,5 +141,22 @@ class SurveyController extends Controller
                         ->where('survey_id', $id)->paginate(20);
 
         return view('admin.survey.statistic', compact('subjects'));
+    }
+
+    public function subjectStatistic($id, $subject_id)
+    {
+        $questions = Question::where('survey_id', $id)->get();
+        $survey = Survey::find($id);
+        $subject = Subject::find($subject_id);
+
+        $studentsNotDone = Student::join('surveys_details', 'students.id', '=', 'surveys_details.student_id')
+            ->where('survey_id', $id)->where('subject_id', $subject_id)
+            ->where('is_done', 0)->get();
+
+        $results = Result::where('survey_id', $id)
+            ->where('subject_id', $subject_id)
+            ->get();
+
+        return view('admin.survey.subjectStatistic', compact('questions', 'survey', 'subject', 'results', 'studentsNotDone'));
     }
 }

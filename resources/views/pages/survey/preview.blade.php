@@ -53,11 +53,11 @@
                                             <td><input type="radio" name="question-{{ $question->id }}" value=""
                                                        checked></td>
                                             </td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="1"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="2"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="3"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="4"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="5"></td>
+                                            <td><input type="radio" name="question-{{ $question->id }}" value="1" data-no="question-{{ $question->id }}-1"></td>
+                                            <td><input type="radio" name="question-{{ $question->id }}" value="2" data-no="question-{{ $question->id }}-2"></td>
+                                            <td><input type="radio" name="question-{{ $question->id }}" value="3" data-no="question-{{ $question->id }}-3"></td>
+                                            <td><input type="radio" name="question-{{ $question->id }}" value="4" data-no="question-{{ $question->id }}-4"></td>
+                                            <td><input type="radio" name="question-{{ $question->id }}" value="5" data-no="question-{{ $question->id }}-5"></td>
                                         </tr>
                                     @endforeach
                                     </tbody>

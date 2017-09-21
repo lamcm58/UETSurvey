@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Result whereStudentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Result whereSubjectClassCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Result whereSubjectName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Result whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Result whereSurveyId($value)
  * @mixin \Eloquent
  */
@@ -27,7 +28,7 @@ class Result extends Model
 {
     protected $table = 'results';
 
-    protected $fillable = ['student_code', 'student_name', 'subject_class_code', 'subject_name', 'survey_id', 'student_answers'];
+    protected $fillable = ['student_code', 'student_name', 'subject_class_code', 'subject_name', 'subject_id', 'survey_id', 'student_answers'];
 
     public $timestamps = false;
 }

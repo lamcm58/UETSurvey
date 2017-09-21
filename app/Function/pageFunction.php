@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\StudentSubject;
+use App\Models\SurveyDetail;
 
 /**
  * summary
@@ -13,4 +14,14 @@ class ListProperty {
 
 		return $data;
 	}
+
+	public static function getTotalStudentDone($survey_id, $subject_id)
+    {
+	    $count = SurveyDetail::where('survey_id', $survey_id)
+                            ->where('subject_id', $subject_id)
+                            ->where('is_done', 1)
+                            ->count();
+
+	    return $count;
+    }
 }

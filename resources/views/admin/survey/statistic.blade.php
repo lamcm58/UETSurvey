@@ -27,7 +27,7 @@
                         <div class="x_content">
                             <ul>
                                 @foreach($subjects as $subject)
-                                    <li><a href=""><h4>{{ str_replace(' ', '', $subject->subject_class_code) }}
+                                    <li><a href="{{ route('survey.subjectStatistic', [$subject->survey_id, $subject->id]) }}"><h4>{{ str_replace(' ', '', $subject->subject_class_code) }}
                                                 - {{ $subject->name }} - {{ $subject->teacher_name }}</h4></a></li>
                                 @endforeach
                             </ul>

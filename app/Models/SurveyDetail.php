@@ -21,7 +21,7 @@ class SurveyDetail extends Model
 {
     protected $table = 'surveys_details';
 
-    protected $fillable = ['survey_id', 'subject_id', 'student_id'];
+    protected $fillable = ['survey_id', 'subject_id', 'student_id', 'is_done'];
 
     public $timestamps = false;
 }

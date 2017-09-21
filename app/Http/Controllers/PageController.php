@@ -66,6 +66,7 @@ class PageController extends Controller
             $items['student_name'] = $student->full_name;
             $items['subject_class_code'] = $subject->subject_class_code;
             $items['subject_name'] = $subject->name;
+            $items['subject_id'] = $subject_id;
             $items['survey_id'] = $id;
             $items['student_answers'] = serialize($data);
 

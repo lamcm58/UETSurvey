@@ -19,6 +19,7 @@ class CreateResultsTable extends Migration
             $table->string('student_name', 50);
             $table->string('subject_class_code', 15);
             $table->string('subject_name', 50);
+            $table->integer('subject_id');
             $table->integer('survey_id');
             $table->text('student_answers');
         });
