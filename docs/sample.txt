@@ -19,3 +19,4 @@ Khảo sát môn học cuối học kỳ;
 [SS0001_16-1-Kết quả học tập của người học được đánh giá bằng nhiều hình thức phù hợp với tính chất và đặc thù môn học- ];
 [SS0001_17-1-Nội dung kiểm tra đánh giá tổng hợp được các kiến thức và kĩ năng mà người học phải đạt được theo yêu cầu- ];
 [SS0001_18-1-Thông tin phản hồi từ kiểm tra đánh giá giúp bạn cải thiện kết quả học tập- ]
+[SS0001_19-2-Nếu có ý kiến khác vui lòng điền vào đây- ]

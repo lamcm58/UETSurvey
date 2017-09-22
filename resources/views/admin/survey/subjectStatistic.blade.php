@@ -18,7 +18,7 @@
                             </div>
                         @endif
                         <div class="x_title">
-                            <h2>{{ $subject->name }} - {{ $survey->survey_name }}</h2>
+                            <h2>{{ $survey->survey_name }} - {{ $subject->name }}_{{ $subject->subject_class_code }}</h2>
                             <div class="clearfix"></div>
                         </div>
 
@@ -28,7 +28,7 @@
                                 @if(count($studentsNotDone)>0)
                                     @foreach($studentsNotDone as $item)
                                         <li>
-                                            <a>{{ $item->full_name }} - {{ $item->student_code }}</a>
+                                            <a>{{ $item->full_name }} - {{ $item->student_code }} - {{ $item->email }}</a>
                                         </li>
                                     @endforeach
                                 @else
@@ -52,6 +52,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <?php $sum = 0; $count = 0; ?>
                                 @foreach($questions as $question)
                                     <?php
                                         $total_1_{$question->id} = 0;
@@ -59,40 +60,63 @@
                                         $total_3_{$question->id} = 0;
                                         $total_4_{$question->id} = 0;
                                         $total_5_{$question->id} = 0;
+                                        $answer_{$question->id} = "";
                                     ?>
                                     @if(count($results)>0)
                                         <?php
+                                            $answer_{$question->id} .= '<ul>';
                                             foreach ($results as $result) {
                                                 $list_result = unserialize($result->student_answers);
-                                                if ($list_result["question-{$question->id}"]=="1") {
-                                                    $total_1_{$question->id} += 1;
-                                                }
-                                                if ($list_result["question-{$question->id}"]=="2") {
-                                                    $total_2_{$question->id} += 1;
-                                                }
-                                                if ($list_result["question-{$question->id}"]=="3") {
-                                                    $total_3_{$question->id} += 1;
-                                                }
-                                                if ($list_result["question-{$question->id}"]=="4") {
-                                                    $total_4_{$question->id} += 1;
-                                                }
-                                                if ($list_result["question-{$question->id}"]=="5") {
-                                                    $total_5_{$question->id} += 1;
+                                                if ($question->question_type==1) {
+                                                    $count += 1;
+                                                    if ($list_result["question-{$question->id}"]=="1") {
+                                                        $total_1_{$question->id} += 1;
+                                                        $sum += 1;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="2") {
+                                                        $total_2_{$question->id} += 1;
+                                                        $sum += 2;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="3") {
+                                                        $total_3_{$question->id} += 1;
+                                                        $sum += 3;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="4") {
+                                                        $total_4_{$question->id} += 1;
+                                                        $sum += 4;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="5") {
+                                                        $total_5_{$question->id} += 1;
+                                                        $sum += 5;
+                                                    }
+                                                } else {
+                                                    $answer_{$question->id} .= '<li>'.$list_result["question-{$question->id}"].'</li>';
                                                 }
                                             }
+                                            $answer_{$question->id} .= '</ul>';
                                         ?>
                                     @endif
-                                    <tr>
-                                        <td>{{ $question->question_content }}</td>
-                                        <td>{{ $total_1_{$question->id} }} / {{ ListProperty::getTotalStudentDone($survey->id, $subject->id) }}</td>
-                                        <td>{{ $total_2_{$question->id} }} / {{ ListProperty::getTotalStudentDone($survey->id, $subject->id) }}</td>
-                                        <td>{{ $total_3_{$question->id} }} / {{ ListProperty::getTotalStudentDone($survey->id, $subject->id) }}</td>
-                                        <td>{{ $total_4_{$question->id} }} / {{ ListProperty::getTotalStudentDone($survey->id, $subject->id) }}</td>
-                                        <td>{{ $total_5_{$question->id} }} / {{ ListProperty::getTotalStudentDone($survey->id, $subject->id) }}</td>
-                                    </tr>
+                                    @if($question->question_type == 1)
+                                        <tr>
+                                            <td>{{ $question->question_content }}</td>
+                                            <td>{{ $total_1_{$question->id} }} / {{ count($results) }}</td>
+                                            <td>{{ $total_2_{$question->id} }} / {{ count($results) }}</td>
+                                            <td>{{ $total_3_{$question->id} }} / {{ count($results) }}</td>
+                                            <td>{{ $total_4_{$question->id} }} / {{ count($results) }}</td>
+                                            <td>{{ $total_5_{$question->id} }} / {{ count($results) }}</td>
+                                        </tr>
+                                    @elseif($question->question_type == 2)
+                                        <tr>
+                                            <td colspan="7">
+                                                <h4>{{ $question->question_content }}</h4>
+                                                <div>{!! ($answer_{$question->id}!='')?$answer_{$question->id}:'' !!}</div>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>
+                            <h4>Tổng điểm đánh giá của môn học: {{ $sum/count($results) }}/{{ $count*5/count($results) }}</h4>
                         </div>
                     </div>
                 </div>

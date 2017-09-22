@@ -169,7 +169,6 @@ return [
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         /*
@@ -231,8 +230,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         // Laravel excel
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        // Debug bar
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 

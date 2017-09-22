@@ -48,17 +48,25 @@
                                     </thead>
                                     <tbody>
                                     @foreach($questions as $question)
-                                        <tr>
-                                            <td>{{ $question->question_content }}</td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value=""
-                                                       checked></td>
-                                            </td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="1" data-no="question-{{ $question->id }}-1"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="2" data-no="question-{{ $question->id }}-2"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="3" data-no="question-{{ $question->id }}-3"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="4" data-no="question-{{ $question->id }}-4"></td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="5" data-no="question-{{ $question->id }}-5"></td>
-                                        </tr>
+                                        @if($question->question_type == 1)
+                                            <tr>
+                                                <td>{{ $question->question_content }}</td>
+                                                <td><input type="radio" name="question-{{ $question->id }}" value=""
+                                                           checked></td>
+                                                </td>
+                                                <td><input type="radio" name="question-{{ $question->id }}" value="1"></td>
+                                                <td><input type="radio" name="question-{{ $question->id }}" value="2"></td>
+                                                <td><input type="radio" name="question-{{ $question->id }}" value="3"></td>
+                                                <td><input type="radio" name="question-{{ $question->id }}" value="4"></td>
+                                                <td><input type="radio" name="question-{{ $question->id }}" value="5"></td>
+                                            </tr>
+                                        @elseif($question->question_type == 2)
+                                            <tr>
+                                                <td colspan="7">
+                                                    <textarea name="question-{{ $question->id }}" class="form-control" id="" cols="30" rows="10" placeholder="{{ $question->question_content }}"></textarea>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                     </tbody>
                                 </table>

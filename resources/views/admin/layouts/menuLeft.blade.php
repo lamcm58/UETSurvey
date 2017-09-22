@@ -30,7 +30,7 @@
 
                 <ul class="nav side-menu">
                     <li>
-                        <a href="#"><i class="fa fa-home"></i> Trang chủ </a>
+                        <a href="{{ route('admin.home') }}"><i class="fa fa-home"></i> Trang chủ </a>
                     </li>
                     <li>
                         <a>

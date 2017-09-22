@@ -32,7 +32,3 @@ function getScoreForOneSubject($result = []) {
 
     return $total;
 }
-
-function countNumberOfAnswer($student_number, $question) {
-
-}
