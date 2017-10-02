@@ -54,7 +54,6 @@
                             <p>4 = Cơ bản đồng ý</p>
                             <p>5 = Hoàn toàn đồng ý</p>
 
-                            <?php $i = 1;?>
                             <table class="table table-striped table-bordered dt-responsive nowrap"
                                    cellspacing="0" width="100%">
                                 <thead>
@@ -69,26 +68,33 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($questions as $question)
-                                    @if($question->question_type == 1)
+                                <?php $i=0;?>
+                                @foreach($question_categories as $item)
+                                    <?php $i++;?>
+                                    <tr>
+                                        <td><h3>{{ $i }}. {{ $item->question_category }}</h3></td>
+                                        <td colspan="6"></td>
+                                    </tr>
+                                    <?php $questions = ListProperty::getQuestionByCategory($item->question_category); ?>
+                                    @foreach($questions as $question)
+                                        @if($question->question_type == 1)
                                         <tr>
-                                            <td>{{ $question->question_content }}</td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value=""
-                                                       checked></td>
-                                            </td>
+                                            <td>{{ $question->id }}. {{ $question->question_content }}</td>
+                                            <td><input type="radio" name="question-{{ $question->id }}" value="" checked></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="1"></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="2"></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="3"></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="4"></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="5"></td>
                                         </tr>
-                                    @elseif($question->question_type == 2)
-                                        <tr>
-                                            <td colspan="7">
-                                                <textarea name="question-{{ $question->id }}" class="form-control" id="" cols="30" rows="10" placeholder="{{ $question->question_content }}"></textarea>
-                                            </td>
-                                        </tr>
-                                    @endif
+                                        @elseif($question->question_type == 2)
+                                            <tr>
+                                                <td colspan="7">
+                                                    <textarea name="question-{{ $question->id }}" class="form-control" id="" cols="30" rows="10" placeholder="{{ $question->question_content }}"></textarea>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
                                 @endforeach
                                 </tbody>
                             </table>

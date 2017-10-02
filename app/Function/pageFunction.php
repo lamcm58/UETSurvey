@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use App\Models\StudentSubject;
 use App\Models\SurveyDetail;
+use App\Models\Question;
 
 /**
  * summary
@@ -23,5 +24,12 @@ class ListProperty {
                             ->count();
 
 	    return $count;
+    }
+
+    public static function getQuestionByCategory($category)
+    {
+        $result = Question::where('question_category', '=', $category)->get();
+
+        return $result;
     }
 }

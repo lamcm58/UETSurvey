@@ -42,9 +42,13 @@ class PageController extends Controller
     {
         $subject = Subject::find($subject_id);
     	$item = Survey::find($id);
-        $questions = Question::where('survey_id', $id)->get();
+        $question_categories = Question::select('question_category')
+            ->where('survey_id', $id)
+            ->groupBy('question_category')
+            ->orderBy('id')
+            ->get();
 
-        return view('pages.survey.preview', compact('item', 'questions', 'subject'));
+        return view('pages.survey.preview', compact('item', 'question_categories', 'subject'));
     }
 
     public function doSurvey(Request $request, $subject_id, $id)

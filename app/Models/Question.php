@@ -30,7 +30,7 @@ class Question extends Model
 {
     protected $table = 'questions';
 
-    protected $fillable = ['question_code', 'question_type', 'question_category', 'question_content', 'answer', 'survey_id'];
+    protected $fillable = ['question_code', 'question_type', 'question_content', 'answer', 'question_category', 'survey_id'];
 
     public $timestamps = true;
 

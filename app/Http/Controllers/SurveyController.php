@@ -86,11 +86,15 @@ class SurveyController extends Controller
     public function preview($id)
     {
         $item = Survey::find($id);
-        $questions = Question::where('survey_id', $id)->get();
+        $question_categories = Question::select('question_category')
+                    ->where('survey_id', $id)
+                    ->groupBy('question_category')
+                    ->orderBy('id')
+                    ->get();
         $students = Student::all();
         $categories = Category::all();
 
-        return view('admin.survey.preview', compact('item', 'questions','students', 'categories'));
+        return view('admin.survey.preview', compact('item', 'question_categories','students', 'categories'));
     }
 
     public function grantCategory(Request $request, $id)
@@ -145,7 +149,11 @@ class SurveyController extends Controller
 
     public function subjectStatistic($id, $subject_id)
     {
-        $questions = Question::where('survey_id', $id)->get();
+        $question_categories = Question::select('question_category')
+            ->where('survey_id', $id)
+            ->groupBy('question_category')
+            ->orderBy('id')
+            ->get();
         $survey = Survey::find($id);
         $subject = Subject::find($subject_id);
 
@@ -157,6 +165,6 @@ class SurveyController extends Controller
             ->where('subject_id', $subject_id)
             ->get();
 
-        return view('admin.survey.subjectStatistic', compact('questions', 'survey', 'subject', 'results', 'studentsNotDone'));
+        return view('admin.survey.subjectStatistic', compact('question_categories', 'survey', 'subject', 'results', 'studentsNotDone'));
     }
 }
