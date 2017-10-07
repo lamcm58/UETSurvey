@@ -14,7 +14,7 @@ use App\Models\Subject;
 use App\Models\SubjectSurvey;
 use App\Models\Result;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class PageController extends Controller
 {
@@ -22,6 +22,9 @@ class PageController extends Controller
     {
     	$data = StudentSubject::join('subjects', 'students_subjects.subject_id', '=', 'subjects.id')->where('student_id', Auth::user()->id)->get();
     	if (Auth::check()) {
+            Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
+            Log::info('User '.Auth::user()->username.' accesses to list subjects of him/hers pages.');
+
             return view('pages.layouts.index', compact('data'));
         }
     }
@@ -35,6 +38,9 @@ class PageController extends Controller
                     ->where('student_id', Auth::id())
                     ->get();
 
+        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
+        Log::info('User '.Auth::user()->username.' accesses to detail page of '.$subject->name.'.');
+
         return view('pages.subject.detail', compact('subject','selected'));
     }
 
@@ -47,8 +53,27 @@ class PageController extends Controller
             ->groupBy('question_category')
             ->orderBy('id')
             ->get();
+        $detail = SurveyDetail::where('survey_id', $id)
+            ->where('subject_id', $subject_id)
+            ->where('student_id', Auth::id())
+            ->where('is_done', 1)->first();
 
-        return view('pages.survey.preview', compact('item', 'question_categories', 'subject'));
+        if (count($detail)>0) {
+            $check = true;
+        } else {
+            $check = false;
+        }
+
+        $student_code = Student::find(Auth::id())->student_code;
+        $result = Result::where('survey_id', $id)
+            ->where('subject_id', $subject_id)
+            ->where('student_code', $student_code)
+            ->get();
+
+        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
+        Log::info('User '.Auth::user()->username.' accesses to survey pages of '.$subject->name.'.');
+
+        return view('pages.survey.preview', compact('item', 'question_categories', 'subject', 'check', 'result'));
     }
 
     public function doSurvey(Request $request, $subject_id, $id)
@@ -56,38 +81,31 @@ class PageController extends Controller
         $student = Student::find(Auth::id());
         $subject = Subject::find($subject_id);
         $data = $request->all();
-        $count = 0;
-        foreach ($data as $item) {
-            if ($item != null) {
-                $count += 1;
-            }
-        }
 
-        if ($count == count($data)) {
-            unset($data['_token']);
-            $items = [];
-            $items['student_code'] = $student->student_code;
-            $items['student_name'] = $student->full_name;
-            $items['subject_class_code'] = $subject->subject_class_code;
-            $items['subject_name'] = $subject->name;
-            $items['subject_id'] = $subject_id;
-            $items['survey_id'] = $id;
-            $items['student_answers'] = serialize($data);
+        unset($data['_token']);
+        $items = [];
+        $items['student_code'] = $student->student_code;
+        $items['student_name'] = $student->full_name;
+        $items['subject_class_code'] = $subject->subject_class_code;
+        $items['subject_name'] = $subject->name;
+        $items['subject_id'] = $subject_id;
+        $items['survey_id'] = $id;
+        $items['student_answers'] = serialize($data);
 
-            Result::create($items);
+        Result::create($items);
 
-            // update survey_detail property
-            $result = SurveyDetail::where('survey_id', $id)
-                                    ->where('subject_id', $subject_id)
-                                    ->where('student_id', Auth::id())
-                                    ->first();
-            $result->is_done = 1;
-            $result->save();
+        // update survey_detail property
+        $result = SurveyDetail::where('survey_id', $id)
+            ->where('subject_id', $subject_id)
+            ->where('student_id', Auth::id())
+            ->first();
+        $result->is_done = 1;
+        $result->save();
 
-            return redirect()->route('subjectDetail', $subject_id)->with('success', 'Thanks for your responses.');
-        } else {
-            return back()->with('error', 'You need to answer all questions.');
-        }
+        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
+        Log::info('User '.Auth::user()->username.' has done the survey of '.$subject->name.'.');
+
+        return redirect()->route('subjectDetail', $subject_id)->with('success', 'Cảm ơn các phản hồi của bạn.');
     }
 
     public function viewCate($id)
@@ -96,6 +114,8 @@ class PageController extends Controller
         $subjects = Subject::where('category_id', $id)->paginate(20);
         $surveys = Survey::all();
         if (Auth::guard('admin')->check()) {
+            Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
+            Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to list subjects page of '.Category::find($id)->category_name.' .');
             return view('admin.subject.list', compact('cate_id', 'subjects', 'surveys'));
         }
         return view('pages.subject.list', compact('cate_id', 'subjects', 'surveys'));
@@ -109,7 +129,10 @@ class PageController extends Controller
                 ->where('survey_id', $survey_id)
                 ->first();
             if (isset($item)) {
-                return back()->with('error', 'Current survey has been added for all subjects.');
+                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_error.log');
+                Log::error('Admin '.Auth::guard('admin')->user()->username.' adds survey to all subject of this faculty but this survey is already added to this faculty.');
+
+                return back()->with('error', 'Khảo sát này đã được thêm cho tất cả các môn học này.');
             } else {
                 $data = [];
                 $data['category_id'] = $id;
@@ -131,7 +154,10 @@ class PageController extends Controller
                         }
                     }
                 }
-                return back()->with('success', 'Add survey successfully.');
+                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
+                Log::info('Admin '.Auth::guard('admin')->user()->username.' adds survey to all subject of this faculty.');
+
+                return back()->with('success', 'Thêm khảo sát thành công.');
             }
         }
     }

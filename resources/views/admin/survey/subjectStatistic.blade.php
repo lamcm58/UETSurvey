@@ -69,7 +69,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php $i=0;?>
+                                <?php $i = 0;?>
                                 @foreach($question_categories as $item)
                                     <?php $i++;?>
                                     <tr>
@@ -80,39 +80,39 @@
                                     $questions = ListProperty::getQuestionByCategory($item->question_category);?>
                                     @foreach($questions as $question)
                                         <?php
-                                            $total_1_{$question->id} = 0;
-                                            $total_2_{$question->id} = 0;
-                                            $total_3_{$question->id} = 0;
-                                            $total_4_{$question->id} = 0;
-                                            $total_5_{$question->id} = 0;
-                                            $answer_{$question->id} = "";
+                                        $total_1_{$question->id} = 0;
+                                        $total_2_{$question->id} = 0;
+                                        $total_3_{$question->id} = 0;
+                                        $total_4_{$question->id} = 0;
+                                        $total_5_{$question->id} = 0;
+                                        $answer_{$question->id} = [];
                                         ?>
                                         @if(count($results)>0)
                                             <?php
-                                                $answer_{$question->id} .= '<ul>';
-                                                foreach ($results as $result) {
-                                                    $list_result = unserialize($result->student_answers);
-                                                    if ($question->question_type==1) {
-                                                        if ($list_result["question-{$question->id}"]=="1") {
-                                                            $total_1_{$question->id} += 1;
-                                                        }
-                                                        if ($list_result["question-{$question->id}"]=="2") {
-                                                            $total_2_{$question->id} += 1;
-                                                        }
-                                                        if ($list_result["question-{$question->id}"]=="3") {
-                                                            $total_3_{$question->id} += 1;
-                                                        }
-                                                        if ($list_result["question-{$question->id}"]=="4") {
-                                                            $total_4_{$question->id} += 1;
-                                                        }
-                                                        if ($list_result["question-{$question->id}"]=="5") {
-                                                            $total_5_{$question->id} += 1;
-                                                        }
-                                                    } else {
-                                                        $answer_{$question->id} .= '<li>'.$list_result["question-{$question->id}"].'</li>';
+                                            foreach ($results as $result) {
+                                                $list_result = unserialize($result->student_answers);
+                                                if ($question->question_type==1) {
+                                                    if ($list_result["question-{$question->id}"]=="1") {
+                                                        $total_1_{$question->id} += 1;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="2") {
+                                                        $total_2_{$question->id} += 1;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="3") {
+                                                        $total_3_{$question->id} += 1;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="4") {
+                                                        $total_4_{$question->id} += 1;
+                                                    }
+                                                    if ($list_result["question-{$question->id}"]=="5") {
+                                                        $total_5_{$question->id} += 1;
+                                                    }
+                                                } else {
+                                                    if ($list_result["question-{$question->id}"] != '') {
+                                                        array_push($answer_{$question->id}, $list_result["question-{$question->id}"]);
                                                     }
                                                 }
-                                                $answer_{$question->id} .= '</ul>';
+                                            }
                                             ?>
                                         @endif
                                         @if($question->question_type == 1)
@@ -142,13 +142,20 @@
                                                     $sum += 5*$total_5_{$question->id};
                                                 }
                                                 ?>
-                                                <td align="center">{{ number_format($sum/count($results), 1) }}</td>
+                                                <td align="center">{{ (count($results)>0)?number_format($sum/count($results), 1):0 }}</td>
                                             </tr>
                                         @elseif($question->question_type == 2)
                                             <tr>
-                                                <td colspan="7">
-                                                    <h4>{{ $question->question_content }}</h4>
-                                                    <div>{!! ($answer_{$question->id}!='')?$answer_{$question->id}:'' !!}</div>
+                                                <td colspan="8">
+                                                    <div>
+                                                        @if(!empty($answer_{$question->id}))
+                                                            @foreach($answer_{$question->id} as $item)
+                                                                {!! $item !!}<br/>
+                                                            @endforeach
+                                                        @else
+                                                            {{ 'Không có' }}
+                                                        @endif
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endif
@@ -156,6 +163,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            <a href="{{ route('survey.export', [$survey->id, $subject->id]) }}" class="btn btn-success">Exprot statistic</a>
                         </div>
                     </div>
                 </div>

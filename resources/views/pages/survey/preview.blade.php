@@ -20,6 +20,7 @@
                         <div class="x_title">
                             <h2>{{ $item->survey_name }}</h2>
                             <div class="clearfix"></div>
+                            <?php if ($check) echo "(Bạn đã làm khảo sát này rồi nên bạn không có quyền làm lại nữa)"?>
                         </div>
                         <div class="x_content">
                             <p>Đề nghị cho biết ý kiến đánh giá của bạn bằng cách Tích chọn vào giá trị tương ứng (1..5) về từng vấn đề trong quá trình tham gia môn học này.</p>
@@ -38,7 +39,6 @@
                                     <thead>
                                     <tr>
                                         <th></th>
-                                        <th></th>
                                         <th>1</th>
                                         <th>2</th>
                                         <th>3</th>
@@ -47,6 +47,11 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <?php
+                                    if(count($result)>0) {
+                                        $list_result = unserialize($result[0]['student_answers']);
+                                    }
+                                    ?>
                                     <?php $i=0;?>
                                     @foreach($question_categories as $item)
                                         <?php $i++;?>
@@ -59,17 +64,16 @@
                                             @if($question->question_type == 1)
                                                 <tr>
                                                     <td>{{ $question->id }}. {{ $question->question_content }}</td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="" checked></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="1"></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="2"></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="3"></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="4"></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="5"></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="1" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="1")?'checked':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="2" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="2")?'checked':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="3" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="3")?'checked':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="4" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="4")?'checked':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="5" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="5")?'checked':''}} required></td>
                                                 </tr>
                                             @elseif($question->question_type == 2)
                                                 <tr>
-                                                    <td colspan="7">
-                                                        <textarea name="question-{{ $question->id }}" class="form-control" id="" cols="30" rows="10" placeholder="{{ $question->question_content }}"></textarea>
+                                                    <td colspan="6">
+                                                        <textarea name="question-{{ $question->id }}" class="form-control" id="" cols="30" rows="10" placeholder="{{ $question->question_content }}" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]!="")?$list_result["question-{$question->id}"]:''}} {{($check)?'readonly':''}}></textarea>
                                                     </td>
                                                 </tr>
                                             @endif
@@ -77,7 +81,7 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                                <button type="submit" class="btn btn-success">Gửi</button>
+                                <button type="submit" class="btn btn-success" {{($check)?'disabled':''}}>Gửi</button>
                             </form>
                         </div>
                     </div>

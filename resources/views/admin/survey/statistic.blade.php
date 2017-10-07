@@ -25,16 +25,33 @@
                         </div>
 
                         <div class="x_content">
-                            <ul>
-                                @foreach($subjects as $subject)
-                                    <li><a href="{{ route('survey.subjectStatistic', [$subject->survey_id, $subject->id]) }}"><h4>{{ str_replace(' ', '', $subject->subject_class_code) }}
-                                                - {{ $subject->name }} - {{ $subject->teacher_name }}</h4></a></li>
+                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                   cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Khoa</th>
+                                    <th>Thống kê</th>
+                                    <th>Tải thống kê</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php $i=0;?>
+                                @foreach($categories as $category)
+                                    <?php $i++;?>
+                                    <tr>
+                                        <td>{{ $i }}</td>
+                                        <td><a href="{{ route('survey.statisticCategory', [$survey->id, $category->id]) }}">{{ $category->category_name }}</a></td>
+                                        <td><a href="#" class="btn btn-info"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Thống kê</a></td>
+                                        <td><a href="{{ route('survey.export', [$survey->id, $category->id]) }}" class="btn btn-warning"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Xuất báo cáo</a></td>
+                                    </tr>
                                 @endforeach
-                            </ul>
+                                </tbody>
+                            </table>
                         </div>
-                        {{ $subjects->links() }}
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 @endsection

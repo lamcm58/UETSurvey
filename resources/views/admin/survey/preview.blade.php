@@ -59,7 +59,6 @@
                                 <thead>
                                 <tr>
                                     <th></th>
-                                    <th></th>
                                     <th>1</th>
                                     <th>2</th>
                                     <th>3</th>
@@ -80,7 +79,6 @@
                                         @if($question->question_type == 1)
                                         <tr>
                                             <td>{{ $question->id }}. {{ $question->question_content }}</td>
-                                            <td><input type="radio" name="question-{{ $question->id }}" value="" checked></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="1"></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="2"></td>
                                             <td><input type="radio" name="question-{{ $question->id }}" value="3"></td>
@@ -89,7 +87,7 @@
                                         </tr>
                                         @elseif($question->question_type == 2)
                                             <tr>
-                                                <td colspan="7">
+                                                <td colspan="6">
                                                     <textarea name="question-{{ $question->id }}" class="form-control" id="" cols="30" rows="10" placeholder="{{ $question->question_content }}"></textarea>
                                                 </td>
                                             </tr>
