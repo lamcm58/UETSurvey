@@ -41,9 +41,9 @@
                                     <?php $i++;?>
                                     <tr>
                                         <td>{{ $i }}</td>
-                                        <td><a href="{{ route('survey.statisticCategory', [$survey->id, $category->id]) }}">{{ $category->category_name }}</a></td>
-                                        <td><a href="#" class="btn btn-info"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Thống kê</a></td>
-                                        <td><a href="{{ route('survey.export', [$survey->id, $category->id]) }}" class="btn btn-warning"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Xuất báo cáo</a></td>
+                                        <td><a href="{{ route('survey.statisticCategory.subjects', [$survey->id, $category->id]) }}">{{ $category->category_name }}</a></td>
+                                        <td><a href="{{ route('survey.statisticCategory', [$survey->id, $category->id]) }}" class="btn btn-info"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Thống kê</a></td>
+                                        <td><a href="{{ route('survey.exportStat', [$survey->id, $category->id]) }}" class="btn btn-warning"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Xuất báo cáo</a></td>
                                     </tr>
                                 @endforeach
                                 </tbody>

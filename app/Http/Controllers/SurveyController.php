@@ -14,7 +14,6 @@ use App\Models\SurveyDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Excel;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class SurveyController extends Controller
@@ -23,18 +22,12 @@ class SurveyController extends Controller
     {
         $surveys = Survey::all();
 
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-        Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to the list surveys page.');
-
         return view('admin.survey.list', compact('surveys'));
     }
 
     public function add()
     {
         $subjects = Subject::all();
-
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-        Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to the add survey page.');
 
         return view('admin.survey.add', compact('subjects'));
     }
@@ -70,14 +63,8 @@ class SurveyController extends Controller
                 }
             }
 
-            Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-            Log::info('Admin '.Auth::guard('admin')->user()->username.' had imported the file of survey and questions into database.');
-
             return back()->with('success', 'Thêm khảo sát thành công.');
         }
-
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_error.log');
-        Log::error('Admin '.Auth::guard('admin')->user()->username.' had imported the file of survey and questions but there was something wrong.');
 
         return back()->with('error', 'Có lỗi xảy ra. Vui lòng kiểm tra lại file của bạn.');
     }
@@ -114,9 +101,6 @@ class SurveyController extends Controller
         $students = Student::all();
         $categories = Category::all();
 
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-        Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to the preview page of '.$item->survey_name.'.');
-
         return view('admin.survey.preview', compact('item', 'question_categories', 'students', 'categories'));
     }
 
@@ -131,8 +115,6 @@ class SurveyController extends Controller
             ->get();
 
         if (count($categories) > 0) {
-            Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_error.log');
-            Log::error('Admin '.Auth::guard('admin')->user()->username.' had added '.Survey::find($id)->survey_name.' to '.Category::find($category_id)->category_name.' but it was already added to this faculty.');
 
             return back()->with('error', 'Xin lỗi. Khảo sát đã được thêm cho tất cả các môn học này.');
         } else {
@@ -162,9 +144,6 @@ class SurveyController extends Controller
                 }
             }
 
-            Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-            Log::info('Admin '.Auth::guard('admin')->user()->username.' had added '.Survey::find($id)->survey_name.' to all subjects of '.Category::find($category_id)->category_name.' .');
-
             return back()->with('success', 'Thêm khảo sát thành công.');
         }
     }
@@ -176,20 +155,17 @@ class SurveyController extends Controller
         $subjects = SubjectSurvey::join('subjects', 'subjects.id', '=', 'subjects_surveys.subject_id')
             ->where('survey_id', $id)->paginate(20);
 
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-        Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to statistic page of '.Survey::find($id)->survey_name.' .');
-
         return view('admin.survey.statistic', compact('survey', 'subjects', 'categories'));
     }
 
-    public function statisticCategory($id, $cat_id)
+    public function statisticCategorySubjects($id, $cat_id)
     {
         $survey = Survey::find($id);
         $subjects = SubjectSurvey::join('subjects', 'subjects.id', '=', 'subjects_surveys.subject_id')
             ->where('survey_id', $id)
             ->where('subjects.category_id', $cat_id)->paginate(20);
 
-        return view('admin.survey.statisticCategory', compact('survey', 'subjects', 'categories'));
+        return view('admin.survey.statisticCategorySubjects', compact('survey', 'subjects', 'categories'));
     }
 
     public function subjectStatistic($id, $subject_id)
@@ -210,9 +186,6 @@ class SurveyController extends Controller
             ->where('subject_id', $subject_id)
             ->get();
 
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-        Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to statistic page of '.$survey->survey_name.' and '.$subject->name.' .');
-
         return view('admin.survey.subjectStatistic', compact('question_categories', 'survey', 'subject', 'results', 'studentsNotDone'));
     }
 
@@ -232,8 +205,8 @@ class SurveyController extends Controller
 
         Excel::create($subject->subject_class_code.' - '.$subject->name, function ($excel) use ($subject, $question_categories, $results) {
             // Build the spreadsheet, passing in the payments array
-            $excel->sheet($subject->subject_class_code, function ($sheet) use ($question_categories, $results) {
-                $sheet->loadView('admin.layouts.surveyTable', ['question_categories' => $question_categories, 'results' => $results]);
+            $excel->sheet($subject->subject_class_code, function ($sheet) use ($question_categories, $results, $subject) {
+                $sheet->loadView('admin.layouts.surveyTable', ['question_categories' => $question_categories, 'results' => $results, 'subject' => $subject]);
             });
 
         })->download('xlsx');
@@ -246,7 +219,21 @@ class SurveyController extends Controller
             ->where('survey_id', $id)
             ->where('subjects.category_id', $cat_id)->get();
 
-        Excel::create($category->category_name, function ($excel) use ($subjects, $id) {
+        Excel::create($category->category_name, function ($excel) use ($subjects, $id, $cat_id) {
+            $question_categories = Question::select('question_category')
+                ->where('survey_id', $id)
+                ->groupBy('question_category')
+                ->orderBy('id')
+                ->get();
+            $category = Category::find($cat_id);
+            $results = Result::join('subjects', 'subjects.id', '=', 'results.subject_id')
+                ->where('survey_id', $id)
+                ->where('subjects.category_id', $cat_id)
+                ->get();
+
+            $excel->sheet('Thống kê', function ($sheet) use ($question_categories, $results, $category) {
+                $sheet->loadView('admin.layouts.surveyTable', ['question_categories' => $question_categories, 'results' => $results, 'category' => $category]);
+            });
             foreach ($subjects as $subject) {
                 $question_categories = Question::select('question_category')
                     ->where('survey_id', $id)
@@ -258,10 +245,28 @@ class SurveyController extends Controller
                     ->where('subject_id', $subject->id)
                     ->get();
                 // Build the spreadsheet, passing in the payments array
-                $excel->sheet($subject->subject_class_code, function ($sheet) use ($question_categories, $results) {
-                    $sheet->loadView('admin.layouts.surveyTable', ['question_categories' => $question_categories, 'results' => $results]);
+                $excel->sheet($subject->subject_class_code, function ($sheet) use ($question_categories, $results, $subject) {
+                    $sheet->loadView('admin.layouts.surveyTable', ['question_categories' => $question_categories, 'results' => $results, 'subject' => $subject]);
                 });
             }
         })->download('xlsx');
+    }
+
+    public function statisticCategory($id, $category_id)
+    {
+        $question_categories = Question::select('question_category')
+            ->where('survey_id', $id)
+            ->groupBy('question_category')
+            ->orderBy('id')
+            ->get();
+        $survey = Survey::find($id);
+        $category = Category::find($category_id);
+
+        $results = Result::join('subjects', 'subjects.id', '=', 'results.subject_id')
+            ->where('survey_id', $id)
+            ->where('subjects.category_id', $category_id)
+            ->get();
+
+        return view('admin.survey.categoryStatistic', compact('question_categories', 'survey', 'category', 'results'));
     }
 }

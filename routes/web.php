@@ -35,6 +35,7 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::get('/{id}/preview', ['as' => 'survey.preview', 'uses' => 'SurveyController@preview']);
         Route::post('/{id}/grantSubject', ['as' => 'survey.grantCategory', 'uses' => 'SurveyController@grantCategory']);
         Route::get('/{id}/statistic', ['as' => 'survey.statistic', 'uses' => 'SurveyController@statistic']);
+        Route::get('/{id}/statistic/category/{cat_id}/subjects', ['as' => 'survey.statisticCategory.subjects', 'uses' => 'SurveyController@statisticCategorySubjects']);
         Route::get('/{id}/statistic/category/{cat_id}', ['as' => 'survey.statisticCategory', 'uses' => 'SurveyController@statisticCategory']);
         Route::get('/{id}/statistic/subject/{subject_id}', ['as' => 'survey.subjectStatistic', 'uses' => 'SurveyController@subjectStatistic']);
         Route::get('/export/{survey_id}/{subject_id}', ['as' => 'survey.export', 'uses' => 'SurveyController@export']);

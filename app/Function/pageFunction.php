@@ -16,12 +16,18 @@ class ListProperty {
 		return $data;
 	}
 
-	public static function getTotalStudentDone($survey_id, $subject_id)
+	public static function getTotalStudentDoSurvey($survey_id, $subject_id, $isDone='')
     {
-	    $count = SurveyDetail::where('survey_id', $survey_id)
-                            ->where('subject_id', $subject_id)
-                            ->where('is_done', 1)
-                            ->count();
+        if (!is_numeric($isDone)) {
+            $count = SurveyDetail::where('survey_id', $survey_id)
+                ->where('subject_id', $subject_id)
+                ->count();
+        } else {
+            $count = SurveyDetail::where('survey_id', $survey_id)
+                ->where('subject_id', $subject_id)
+                ->where('is_done', $isDone)
+                ->count();
+        }
 
 	    return $count;
     }

@@ -14,7 +14,6 @@ use App\Models\Subject;
 use App\Models\SubjectSurvey;
 use App\Models\Result;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class PageController extends Controller
 {
@@ -22,9 +21,6 @@ class PageController extends Controller
     {
     	$data = StudentSubject::join('subjects', 'students_subjects.subject_id', '=', 'subjects.id')->where('student_id', Auth::user()->id)->get();
     	if (Auth::check()) {
-            Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
-            Log::info('User '.Auth::user()->username.' accesses to list subjects of him/hers pages.');
-
             return view('pages.layouts.index', compact('data'));
         }
     }
@@ -37,9 +33,6 @@ class PageController extends Controller
                     ->where('subject_id', $id)
                     ->where('student_id', Auth::id())
                     ->get();
-
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
-        Log::info('User '.Auth::user()->username.' accesses to detail page of '.$subject->name.'.');
 
         return view('pages.subject.detail', compact('subject','selected'));
     }
@@ -70,9 +63,6 @@ class PageController extends Controller
             ->where('student_code', $student_code)
             ->get();
 
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
-        Log::info('User '.Auth::user()->username.' accesses to survey pages of '.$subject->name.'.');
-
         return view('pages.survey.preview', compact('item', 'question_categories', 'subject', 'check', 'result'));
     }
 
@@ -102,9 +92,6 @@ class PageController extends Controller
         $result->is_done = 1;
         $result->save();
 
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
-        Log::info('User '.Auth::user()->username.' has done the survey of '.$subject->name.'.');
-
         return redirect()->route('subjectDetail', $subject_id)->with('success', 'Cảm ơn các phản hồi của bạn.');
     }
 
@@ -114,8 +101,6 @@ class PageController extends Controller
         $subjects = Subject::where('category_id', $id)->paginate(20);
         $surveys = Survey::all();
         if (Auth::guard('admin')->check()) {
-            Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-            Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to list subjects page of '.Category::find($id)->category_name.' .');
             return view('admin.subject.list', compact('cate_id', 'subjects', 'surveys'));
         }
         return view('pages.subject.list', compact('cate_id', 'subjects', 'surveys'));
@@ -129,8 +114,6 @@ class PageController extends Controller
                 ->where('survey_id', $survey_id)
                 ->first();
             if (isset($item)) {
-                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_error.log');
-                Log::error('Admin '.Auth::guard('admin')->user()->username.' adds survey to all subject of this faculty but this survey is already added to this faculty.');
 
                 return back()->with('error', 'Khảo sát này đã được thêm cho tất cả các môn học này.');
             } else {
@@ -154,8 +137,6 @@ class PageController extends Controller
                         }
                     }
                 }
-                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-                Log::info('Admin '.Auth::guard('admin')->user()->username.' adds survey to all subject of this faculty.');
 
                 return back()->with('success', 'Thêm khảo sát thành công.');
             }

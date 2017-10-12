@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\SubjectSurvey;
 use App\Models\StudentSubject;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class SubjectController extends Controller
@@ -51,16 +50,10 @@ class SubjectController extends Controller
                 if(!empty($insert)){
                     Subject::insert($insert);
 
-                    Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-                    Log::info('Admin '.Auth::guard('admin')->user()->username.' added list subjects successfully.');
-
                     return back()->with('success','Thêm môn học thành công.');
                 }
             }
         }
-
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_error.log');
-        Log::error('Admin '.Auth::guard('admin')->user()->username.' added the file of list subjects but there is something wrong.');
 
         return back()->with('error', 'Có lỗi xảy ra. Vui lòng kiểm tra lại file của bạn.');
     }
@@ -77,9 +70,6 @@ class SubjectController extends Controller
                     ->join('students', 'students_subjects.student_id', '=', 'students.id')
                     ->where('subject_id', $id)
                     ->get();
-
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-        Log::info('Admin '.Auth::guard('admin')->user()->username.' accesses to detail page of '.$subject->name.'.');
 
         return view('admin.subject.detail', compact('subject','selected', 'surveys', 'students'));
     }

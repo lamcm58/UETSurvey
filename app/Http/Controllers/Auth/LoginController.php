@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Log;
+use App\Models\History;
 
 class LoginController extends Controller
 {
@@ -71,13 +71,15 @@ class LoginController extends Controller
 
             if (Auth::attempt($login))
             {
-                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
-                Log::info('User '.Auth::user()->username.' log in successful with email '.Auth::user()->email.' using IP:'.$request->ip().'.');
+                $data = [];
+                $data['time'] = date('Y-m-d H:i:s');
+                $data['ip_address'] = \Request::getClientIp();
+                $data['actions'] = 'User '. Auth::user()->username .' with email ' . Auth::user()->email . ' signed in successfully into the system.';
+                History::insert($data);
+
                 return redirect()->route('home');
             }
             else {
-                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_error.log');
-                Log::error('Log in fail with IP:'.$request->ip().'.');
                 return redirect()->back()->with(['err' => 'Thông tin đăng nhập không hợp lệ, vui lòng đăng nhập lại.']);
             }
         } catch (\Exception $e) {
@@ -95,13 +97,15 @@ class LoginController extends Controller
 
             if (Auth::guard('admin')->attempt($login))
             {
-                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-                Log::info('Admin '.Auth::guard('admin')->user()->username.' log in successful with email '.Auth::guard('admin')->user()->email.' using IP:'.$request->ip().'.');
+                $data = [];
+                $data['time'] = date('Y-m-d H:i:s');
+                $data['ip_address'] = \Request::getClientIp();
+                $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' with email ' . Auth::guard('admin')->user()->email . ' signed in successfully into the system.';
+                History::insert($data);
+
                 return redirect()->route('admin.home');
             }
             else {
-                Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_error.log');
-                Log::error('Log in fail with IP:'.$request->ip().'.');
                 return redirect()->back()->with(['err' => 'Thông tin đăng nhập không hợp lệ, vui lòng đăng nhập lại.']);
             }
         } catch (\Exception $e) {
@@ -111,8 +115,11 @@ class LoginController extends Controller
 
     public function logout()
     {
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_access.log');
-        Log::info('User '.Auth::user()->username.' log out successful.');
+        $data = [];
+        $data['time'] = date('Y-m-d H:i:s');
+        $data['ip_address'] = \Request::getClientIp();
+        $data['actions'] = 'User '. Auth::user()->username .' with email ' . Auth::user()->email . ' signed out successfully.';
+        History::insert($data);
 
         Auth::logout();
 
@@ -121,8 +128,11 @@ class LoginController extends Controller
 
     public function logoutAdmin()
     {
-        Log::useFiles(storage_path().'/app_logs/'.date('Ymd').'_admin_access.log');
-        Log::info('Admin '.Auth::guard('admin')->user()->username.' log out successful.');
+        $data = [];
+        $data['time'] = date('Y-m-d H:i:s');
+        $data['ip_address'] = \Request::getClientIp();
+        $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' with email ' . Auth::guard('admin')->user()->email . ' signed out successfully.';
+        History::insert($data);
 
         Auth::guard('admin')->logout();
 

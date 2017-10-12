@@ -29,10 +29,12 @@
                                cellspacing="0" width="100%">
                             <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Môn</th>
-                                <th>Xem thống kê</th>
-                                <th>Tải thống kê</th>
+                                <th style="vertical-align: middle">STT</th>
+                                <th style="text-align: center;vertical-align: middle">Môn</th>
+                                <th style="text-align: center">Số SV đã làm</th>
+                                <th style="text-align: center">Số SV chưa làm</th>
+                                <th style="text-align: center;vertical-align: middle">Xem thống kê</th>
+                                <th style="text-align: center;vertical-align: middle">Tải thống kê</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -40,10 +42,12 @@
                             @foreach($subjects as $subject)
                             <?php $i++;?>
                             <tr>
-                                <td>{{ $i }}</td>
-                                <td>{{ $subject->subject_class_code }}_{{ $subject->name }}_{{ $subject->teacher_name }}</td>
-                                <td><a href="{{ route('survey.subjectStatistic', [$survey->id, $subject->id]) }}" class="btn btn-success"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Thống kê</a></td>
-                                <td><a href="{{ route('survey.exportStat', [$survey->id, $subject->id]) }}" class="btn btn-warning"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Xuất báo cáo</a></td>
+                                <td align="center">{{ $i }}</td>
+                                <td style="width:50%;">{{ $subject->subject_class_code }}_{{ $subject->name }}_{{ $subject->teacher_name }}</td>
+                                <td align="center">{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id,1) }}/{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id) }}</td>
+                                <td align="center">{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id,0) }}/{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id) }}</td>
+                                <td style="width:5%;"><a href="{{ route('survey.subjectStatistic', [$survey->id, $subject->id]) }}" class="btn btn-success"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Thống kê</a></td>
+                                <td style="width:5%;"><a href="{{ route('survey.export', [$survey->id, $subject->id]) }}" class="btn btn-warning"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Xuất báo cáo</a></td>
                             </tr>
                             @endforeach
                             </tbody>
