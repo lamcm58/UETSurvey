@@ -18,44 +18,12 @@
                             </div>
                         @endif
                         <div class="x_title">
-                            <h2><h4>{{ str_replace(' ', '', $subject->subject_class_code) }}
-                                    - {{ $subject->name }} - {{ $subject->teacher_name }}</h4></h2>
+                            <h2>{{ $survey->survey_name }} - {{ $subject->name }}_{{ $subject->subject_class_code }}</h2>
                             <div class="clearfix"></div>
                         </div>
-                        <!-- Danh sách survey -->
-                            <h3>Danh sách survey</h3>
-                            <hr>
-                            <table class="table table-striped table-bordered dt-responsive nowrap"
-                                   cellspacing="0" width="100%">
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Tên survey</th>
-                                    <th>Xem</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if(count($selected)>0)
-                                    <?php $i=0;?>
-                                    @foreach($selected as $item)
-                                        <?php $i++;?>
-                                        <tr>
-                                            <td>{{ $i }}</td>
-                                            <td>{{ $item->survey_name }}</td>
-                                            <td><a href="{{ route('survey.preview', $item->survey_id) }}" class="btn btn-info"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Xem</a></td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <td colspan="3">Hiện tại môn học này chưa có survey nào cả.</td>
-                                @endif
-                                </tbody>
-                            </table>
 
-                            <!-- End -->
-                            <hr>
-                            <!-- Danh sách sinh viên -->
-                            <h3>Danh sách sinh viên</h3>
-                            <hr>
+                        <div class="x_content">
+                            <h3>Danh sách sinh viên chưa làm khảo sát</h3>
                             <table class="table table-striped table-bordered dt-responsive nowrap"
                                    cellspacing="0" width="100%">
                                 <thead>
@@ -67,9 +35,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(count($students)>0)
+                                @if(count($studentsNotDone)>0)
                                     <?php $i=0;?>
-                                    @foreach($students as $item)
+                                    @foreach($studentsNotDone as $item)
                                         <?php $i++;?>
                                         <tr>
                                             <td>{{ $i }}</td>
@@ -83,9 +51,9 @@
                                 @endif
                                 </tbody>
                             </table>
-                            {{ $students->links() }}
-                        <!-- End -->
+                            {{ $studentsNotDone->links() }}
                         </div>
+                        <a href="{{ route('survey.exportList', [$survey->id, $subject->id]) }}" class="btn btn-warning">Xuất danh sách</a>
                     </div>
                 </div>
             </div>

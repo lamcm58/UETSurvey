@@ -51,6 +51,7 @@
                                 @endif
                                 </tbody>
                             </table>
+                            {{ $studentsNotDone->links() }}
                             <hr>
 
                             <h3>Thống kê môn học</h3>

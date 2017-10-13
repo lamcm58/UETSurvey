@@ -64,11 +64,11 @@
                                             @if($question->question_type == 1)
                                                 <tr>
                                                     <td>{{ $question->id }}. {{ $question->question_content }}</td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="1" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="1")?'checked':''}} required></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="2" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="2")?'checked':''}} required></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="3" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="3")?'checked':''}} required></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="4" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="4")?'checked':''}} required></td>
-                                                    <td><input type="radio" name="question-{{ $question->id }}" value="5" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="5")?'checked':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="1" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="1")?'checked':''}} {{($check)?'disabled':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="2" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="2")?'checked':''}} {{($check)?'disabled':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="3" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="3")?'checked':''}} {{($check)?'disabled':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="4" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="4")?'checked':''}} {{($check)?'disabled':''}} required></td>
+                                                    <td><input type="radio" name="question-{{ $question->id }}" value="5" {{(isset($list_result["question-{$question->id}"])&&$list_result["question-{$question->id}"]=="5")?'checked':''}} {{($check)?'disabled':''}} required></td>
                                                 </tr>
                                             @elseif($question->question_type == 2)
                                                 <tr>

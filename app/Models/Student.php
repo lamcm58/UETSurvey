@@ -34,7 +34,7 @@ class Student extends Authenticatable
 {
     protected $table = 'students';
 
-    protected $fillable = ['username', 'password', 'student_code', 'class', 'email', 'full_name'];
+    protected $fillable = ['username', 'password', 'student_code', 'email', 'full_name'];
 
     public $timestamps = true;
 

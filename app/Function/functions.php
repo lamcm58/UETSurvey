@@ -1,5 +1,6 @@
 <?php
 use App\Models\Category;
+use App\Models\Subject;
 
 /**
  * Created by PhpStorm.
@@ -31,4 +32,24 @@ function getScoreForOneSubject($result = []) {
     }
 
     return $total;
+}
+
+function formatSubjectCode($code) {
+    $result = substr($code,0,3).'_'.substr($code,3,4).'_'.substr($code, 8);
+
+    return $result;
+}
+
+function formatClassCode($code) {
+    $subjects = Subject::where('code', $code)->orderBy('subject_class_code', 'DESC')->get();
+
+    if (count($subjects) > 0) {
+        $num = (int) substr($subjects[0]['subject_class_code'], (strlen($subjects[0]['subject_class_code'])-1));
+        $num += 1;
+        $result = $code.' '.$num;
+    } else {
+        $result = $code.' 1';
+    }
+
+    return $result;
 }

@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Excel;
 use Illuminate\Support\Facades\Auth;
+use App\Models\History;
 
 class SurveyController extends Controller
 {
@@ -62,6 +63,12 @@ class SurveyController extends Controller
                     Question::create($questions);
                 }
             }
+
+            $data = [];
+            $data['time'] = date('Y-m-d H:i:s');
+            $data['ip_address'] = \Request::getClientIp();
+            $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' added survey successfully.';
+            History::insert($data);
 
             return back()->with('success', 'Thêm khảo sát thành công.');
         }
@@ -180,7 +187,7 @@ class SurveyController extends Controller
 
         $studentsNotDone = Student::join('surveys_details', 'students.id', '=', 'surveys_details.student_id')
             ->where('survey_id', $id)->where('subject_id', $subject_id)
-            ->where('is_done', 0)->get();
+            ->where('is_done', 0)->paginate(20);
 
         $results = Result::where('survey_id', $id)
             ->where('subject_id', $subject_id)
@@ -219,7 +226,7 @@ class SurveyController extends Controller
             ->where('survey_id', $id)
             ->where('subjects.category_id', $cat_id)->get();
 
-        Excel::create($category->category_name, function ($excel) use ($subjects, $id, $cat_id) {
+        Excel::create('Thống kê '.$category->category_name, function ($excel) use ($subjects, $id, $cat_id) {
             $question_categories = Question::select('question_category')
                 ->where('survey_id', $id)
                 ->groupBy('question_category')
@@ -234,6 +241,7 @@ class SurveyController extends Controller
             $excel->sheet('Thống kê', function ($sheet) use ($question_categories, $results, $category) {
                 $sheet->loadView('admin.layouts.surveyTable', ['question_categories' => $question_categories, 'results' => $results, 'category' => $category]);
             });
+
             foreach ($subjects as $subject) {
                 $question_categories = Question::select('question_category')
                     ->where('survey_id', $id)
@@ -268,5 +276,35 @@ class SurveyController extends Controller
             ->get();
 
         return view('admin.survey.categoryStatistic', compact('question_categories', 'survey', 'category', 'results'));
+    }
+
+    public function studentsNotDone($id, $subject_id)
+    {
+        $survey = Survey::find($id);
+        $subject = Subject::find($subject_id);
+
+        $studentsNotDone = Student::join('surveys_details', 'students.id', '=', 'surveys_details.student_id')
+            ->where('survey_id', $id)->where('subject_id', $subject_id)
+            ->where('is_done', 0)->paginate(20);
+
+        return view('admin.survey.studentsNotDone', compact('survey', 'subject', 'studentsNotDone'));
+    }
+
+    public function exportList($id, $subject_id)
+    {
+        $survey = Survey::find($id);
+        $subject = Subject::find($subject_id);
+
+        $studentsNotDone = Student::join('surveys_details', 'students.id', '=', 'surveys_details.student_id')
+            ->where('survey_id', $id)->where('subject_id', $subject_id)
+            ->where('is_done', 0)->get();
+
+        Excel::create('Danh sách sinh viên chưa làm khảo sát - '.$subject->subject_class_code.' - '.$subject->name, function ($excel) use ($survey, $subject, $studentsNotDone) {
+            // Build the spreadsheet, passing in the payments array
+            $excel->sheet($subject->subject_class_code, function ($sheet) use ($survey, $subject, $studentsNotDone) {
+                $sheet->loadView('admin.layouts.studentsTable', ['survey' => $survey, 'subject' => $subject, 'subject' => $subject, 'studentsNotDone' => $studentsNotDone]);
+            });
+
+        })->download('xlsx');
     }
 }

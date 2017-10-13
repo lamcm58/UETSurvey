@@ -50,6 +50,7 @@
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
+                            {{--<li><a href="{{ route('subject.list') }}">Danh sách môn học</a></li>--}}
                             <li><a href="{{ route('subject.add') }}">Thêm môn học</a></li>
                         </ul>
                     </li>
@@ -69,7 +70,8 @@
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
-                            <li><a href="#">Danh sách sinh viên</a></li>
+                            <li><a href="{{ route('student.list') }}">Danh sách sinh viên</a></li>
+                            <li><a href="{{ route('student.add') }}">Thêm danh sách sinh viên</a></li>
                         </ul>
                     </li>
                 </ul>

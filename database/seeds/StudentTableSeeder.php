@@ -20,7 +20,7 @@ class StudentTableSeeder extends Seeder
             $student->username = $faker->userName;
             $student->password = bcrypt('123456');
             $student->student_code = str_random(8);
-            $student->class = $faker->company;
+//            $student->class = $faker->company;
             $student->email = $faker->email;
             $student->full_name = $faker->firstName . ' ' . $faker->lastName;
 

@@ -25,6 +25,7 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::post('/importExcel', ['as' => 'subject.importExcel', 'uses' => 'SubjectController@importExcel']);
         Route::get('/{id}/detail', ['as' => 'subject.detail', 'uses' => 'SubjectController@detail']);
         Route::post('/{id}/addSurvey', ['as' => 'subject.addSurvey', 'uses' => 'SubjectController@addSurvey']);
+        Route::post('/addSubject', ['as' => 'subject.addSubject', 'uses' => 'SubjectController@addSubject']);
     });
 
     Route::group(['prefix' => 'survey'], function () {
@@ -40,8 +41,14 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::get('/{id}/statistic/subject/{subject_id}', ['as' => 'survey.subjectStatistic', 'uses' => 'SurveyController@subjectStatistic']);
         Route::get('/export/{survey_id}/{subject_id}', ['as' => 'survey.export', 'uses' => 'SurveyController@export']);
         Route::get('/exportStat/{survey_id}/{cat_id}', ['as' => 'survey.exportStat', 'uses' => 'SurveyController@exportStat']);
+        Route::get('/{id}/statistic/subject/{subject_id}/studentsNotDone', ['as' => 'survey.subject.studentsNotDone', 'uses' => 'SurveyController@studentsNotDone']);
+        Route::get('/exportList/{survey_id}/{subject_id}', ['as' => 'survey.exportList', 'uses' => 'SurveyController@exportList']);
     });
-    
+    Route::group(['prefix' => 'student'], function () {
+        Route::get('/list', ['as' => 'student.list', 'uses' => 'StudentController@index']);
+        Route::get('/add', ['as' => 'student.add', 'uses' => 'StudentController@add']);
+        Route::post('/importList', ['as' => 'student.importList', 'uses' => 'StudentController@importList']);
+    });
 });
 
 Route::group(['domain' => 'my-survey.com', 'middleware' => 'checkAuthUser'], function () {

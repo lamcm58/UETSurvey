@@ -13,7 +13,7 @@ class SubjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,20 @@ class SubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'code' => 'required',
+            'name' => 'required',
+            'category_id' => 'required',
+            'teacher_name' =>'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'code.required' => 'Mã môn học không được để trống.',
+            'name.required' => 'Tên môn học không được để trống.',
+            'category_id.required' => 'Bạn phải chọn khoa cho môn học này.',
+            'teacher_name.required' => 'Tên giảng viên không được để trống.',
         ];
     }
 }

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Subject;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 use App\Models\SubjectSurvey;
 use App\Models\StudentSubject;
+use App\Models\History;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\SubjectRequest;
 
 class SubjectController extends Controller
 {
@@ -21,7 +24,8 @@ class SubjectController extends Controller
 
     public function add()
     {
-        return view('admin.subject.add');
+        $categories = Category::all();
+        return view('admin.subject.add', compact('categories'));
     }
 
     public function importExcel(Request $request)
@@ -40,7 +44,6 @@ class SubjectController extends Controller
                                 'code' => $v['code'], 
                                 'name' => $v['name'],
                                 'subject_class_code' => $v['subject_class_code'],
-                                'student_quantity' => $v['student_quantity'],
                                 'teacher_name' => $v['teacher_name'],
                                 'category_id' => getCategoryId($v['category'])
                             ];
@@ -50,7 +53,13 @@ class SubjectController extends Controller
                 if(!empty($insert)){
                     Subject::insert($insert);
 
-                    return back()->with('success','Thêm môn học thành công.');
+                    $data = [];
+                    $data['time'] = date('Y-m-d H:i:s');
+                    $data['ip_address'] = \Request::getClientIp();
+                    $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' imported list subjects successfully.';
+                    History::insert($data);
+
+                    return back()->with('success','Thêm danh sách môn học thành công.');
                 }
             }
         }
@@ -66,12 +75,31 @@ class SubjectController extends Controller
                     ->where('subject_id', $id)
                     ->get();
         $surveys = Survey::all();
-        $students = StudentSubject::select('student_id', 'full_name', 'student_code')
+        $students = StudentSubject::select('student_id', 'full_name', 'student_code', 'email')
                     ->join('students', 'students_subjects.student_id', '=', 'students.id')
                     ->where('subject_id', $id)
-                    ->get();
+                    ->paginate(20);
 
         return view('admin.subject.detail', compact('subject','selected', 'surveys', 'students'));
     }
 
+    public function addSubject(SubjectRequest $request)
+    {
+        $subject = [];
+        $subject['code'] = $request->code;
+        $subject['name'] = $request->name;
+        $subject['subject_class_code'] = formatClassCode($request->code);
+        $subject['teacher_name'] = $request->teacher_name;
+        $subject['category_id'] = $request->category_id;
+
+        Subject::insert($subject);
+
+        $data = [];
+        $data['time'] = date('Y-m-d H:i:s');
+        $data['ip_address'] = \Request::getClientIp();
+        $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' added subject '.$subject['name'].'_'.$subject['subject_class_code'].' successfully.';
+        History::insert($data);
+
+        return back()->with('success', 'Thêm môn học thành công.');
+    }
 }

@@ -41,12 +41,36 @@
                             </form>
                             <hr>
                         <div class="x_content">
-                            <ul>
-                                @foreach($subjects as $subject)
-                                    <li><a href="{{ route('subject.detail', $subject->id) }}"><h4>{{ str_replace(' ', '', $subject->subject_class_code) }}
-                                                - {{ $subject->name }} - {{ $subject->teacher_name }}</h4></a></li>
-                                @endforeach
-                            </ul>
+                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                   cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã môn học</th>
+                                    <th>Tên môn học</th>
+                                    <th>Mã lớp môn học</th>
+                                    <th>Giảng viên</th>
+                                    <th>Chi tiết</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if(count($subjects)>0)
+                                    @foreach($subjects as $item)
+                                        <tr>
+                                            <td>{{ $item->id }}</td>
+                                            <td>{{ $item->code }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ $item->subject_class_code }}</td>
+                                            <td>{{ $item->teacher_name }}</td>
+                                            <td><a href="{{ route('subject.detail', $item->id) }}" class="btn btn-info"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Xem</a></td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <td colspan="6">Không có dữ liệu</td>
+                                @endif
+                                </tbody>
+                            </table>
+
                         </div>
                     </div>
                     {{ $subjects->links() }}
