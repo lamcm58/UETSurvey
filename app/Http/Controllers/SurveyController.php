@@ -40,24 +40,30 @@ class SurveyController extends Controller
             $content = file_get_contents($file);
             $str = explode(';', $content);
 
+            $survey_data = Survey::orderBy('id', 'DESC')->first();
+            if (isset($survey_data)) {
+                $ordinal = $survey_data->id + 1;
+            } else {
+                $ordinal = 1;
+            }
             // Create survey
             $survey = [];
-            $survey['survey_code'] = $str[0];
-            $survey['survey_name'] = $str[1];
-            $survey['expired_day'] = date('Y-m-d 23:59:59', strtotime($str[2]));
+            $survey['survey_code'] = 'SS' . str_pad($ordinal, 4, '0', STR_PAD_LEFT);
+            $survey['survey_name'] = $str[0];
+            $survey['expired_day'] = date('Y-m-d 23:59:59', strtotime($str[1]));
             $save = Survey::create($survey);
             if ($save) {
                 $id = $save->id;
                 // Create questions
-                for ($i = 3; $i < sizeof($str); $i++) {
+                for ($i = 2; $i < sizeof($str); $i++) {
                     $questions = [];
-                    $temp = substr($str[$i], 3, (strlen($str[$i]) - 4));
+                    $temp = substr($str[$i], 2, (strlen($str[$i])-3));
                     $result = explode('-', $temp);
-                    $questions['question_code'] = $result[0];
-                    $questions['question_type'] = (integer)$result[1];
-                    $questions['question_content'] = $result[2];
-                    $questions['answer'] = isset($result[3]) ? $result[3] : null;
-                    $questions['question_category'] = $result[4];
+                    $questions['question_code'] = $survey['survey_code'] . '_' . str_pad($i-1, 2, '0', STR_PAD_LEFT);
+                    $questions['question_type'] = (integer)$result[0];
+                    $questions['question_content'] = $result[1];
+                    $questions['answer'] = isset($result[2]) ? $result[2] : null;
+                    $questions['question_category'] = $result[3];
                     $questions['survey_id'] = $id;
 
                     Question::create($questions);
@@ -187,7 +193,7 @@ class SurveyController extends Controller
 
         $studentsNotDone = Student::join('surveys_details', 'students.id', '=', 'surveys_details.student_id')
             ->where('survey_id', $id)->where('subject_id', $subject_id)
-            ->where('is_done', 0)->paginate(20);
+            ->where('is_done', 0)->paginate(10);
 
         $results = Result::where('survey_id', $id)
             ->where('subject_id', $subject_id)
@@ -288,6 +294,18 @@ class SurveyController extends Controller
             ->where('is_done', 0)->paginate(20);
 
         return view('admin.survey.studentsNotDone', compact('survey', 'subject', 'studentsNotDone'));
+    }
+
+    public function studentsDone($id, $subject_id)
+    {
+        $survey = Survey::find($id);
+        $subject = Subject::find($subject_id);
+
+        $studentsDone = Student::join('surveys_details', 'students.id', '=', 'surveys_details.student_id')
+            ->where('survey_id', $id)->where('subject_id', $subject_id)
+            ->where('is_done', 1)->paginate(20);
+
+        return view('admin.survey.studentsDone', compact('survey', 'subject', 'studentsDone'));
     }
 
     public function exportList($id, $subject_id)

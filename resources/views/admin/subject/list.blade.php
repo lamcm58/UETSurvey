@@ -45,7 +45,7 @@
                                    cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>STT</th>
+                                    <th>ID</th>
                                     <th>Mã môn học</th>
                                     <th>Tên môn học</th>
                                     <th>Mã lớp môn học</th>

@@ -42,6 +42,7 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::get('/export/{survey_id}/{subject_id}', ['as' => 'survey.export', 'uses' => 'SurveyController@export']);
         Route::get('/exportStat/{survey_id}/{cat_id}', ['as' => 'survey.exportStat', 'uses' => 'SurveyController@exportStat']);
         Route::get('/{id}/statistic/subject/{subject_id}/studentsNotDone', ['as' => 'survey.subject.studentsNotDone', 'uses' => 'SurveyController@studentsNotDone']);
+        Route::get('/{id}/statistic/subject/{subject_id}/studentsDone', ['as' => 'survey.subject.studentsDone', 'uses' => 'SurveyController@studentsDone']);
         Route::get('/exportList/{survey_id}/{subject_id}', ['as' => 'survey.exportList', 'uses' => 'SurveyController@exportList']);
     });
     Route::group(['prefix' => 'student'], function () {

@@ -26,7 +26,7 @@ class StudentController extends Controller
             })->get();
 
             if (!empty($data) && $data->count()) {
-                foreach ($data[0] as $student) {
+                foreach ($data as $student) {
                     $students[] = [
                         'username' => (string)$student['username'],
                         'password' => bcrypt('123456'),
@@ -39,8 +39,25 @@ class StudentController extends Controller
                     Student::insert($students);
                 }
 
+                $data = [];
+                $data['time'] = date('Y-m-d H:i:s');
+                $data['ip_address'] = \Request::getClientIp();
+                $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' imported list students successfully.';
+                History::insert($data);
+
+                return back()->with('success','Thêm danh sách sinh viên thành công.');
+            }
+        }
+
+        if ($request->hasFile('data_file')) {
+            $path = $request->file('data_file')->getRealPath();
+
+            $data = Excel::load($path, function ($reader) {
+            })->get();
+
+            if (!empty($data) && $data->count()) {
                 $subjects = Subject::all();
-                foreach ($data[1] as $item) {
+                foreach ($data as $item) {
                     $class_code = substr($item['course1'], 6);
                     $_student = Student::where('student_code', (string)$item['username'])->first();
                     foreach ($subjects as $subject) {
@@ -52,20 +69,27 @@ class StudentController extends Controller
                         }
                     }
                 }
-                if(!empty($datas)){
+                if (!empty($datas)) {
                     StudentSubject::insert($datas);
                 }
 
                 $data = [];
                 $data['time'] = date('Y-m-d H:i:s');
                 $data['ip_address'] = \Request::getClientIp();
-                $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' imported list students successfully.';
+                $data['actions'] = 'Admin ' . Auth::guard('admin')->user()->username . ' imported list students and their subjects successfully.';
                 History::insert($data);
 
-                return back()->with('success','Thêm danh sách sinh viên thành công.');
+                return back()->with('success', 'Thêm dữ liệu đăng ký môn học thành công.');
             }
-        }
 
-        return back()->with('error', 'Có lỗi xảy ra. Vui lòng kiểm tra lại file của bạn.');
+            return back()->with('error', 'Có lỗi xảy ra. Vui lòng kiểm tra lại file của bạn.');
+        }
+    }
+
+    public function index()
+    {
+        $students = Student::paginate(20);
+
+        return view('admin.student.list', compact('students'));
     }
 }

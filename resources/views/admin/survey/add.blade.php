@@ -22,9 +22,8 @@
                             <div class="clearfix"></div>
                         </div>
                         {{--Thêm survey bằng file text--}}
-                        <div class="x_title">
+                        <div>
                             <h2>Thêm bằng file</h2>
-                            <br/>
                             <form action="{{ route('survey.import') }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <div class="x_panel">
@@ -35,43 +34,7 @@
                                 </div>
 
                             </form>
-                            {{--<div class="clearfix"></div>--}}
                         </div>
-
-                        {{--Thêm thủ công--}}
-                        {{--<div class="x_content">
-                            <h2>Thêm bằng tay</h2>
-                            <br />
-                            <form class="form-horizontal form-label-left" action="{{ route('survey.create') }}" method="POST" enctype="multipart/form-data">
-                                {{ csrf_field() }}
-                                <div class="form-group">
-                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tên survey<span class="required">*</span></label>
-                                    <div class="col-md-9 col-sm-9 col-xs-12">
-                                        <input type="text" name="survey_name" class="form-control" placeholder="Tên survey" value="{{ old('survey_name') }}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Ngày hết hạn<span class="required">*</span>
-                                    </label>
-                                    <div class="col-md-9 col-sm-9 col-xs-12">
-                                        <fieldset>
-                                            <input type="text" class="form-control has-feedback-left"
-                                                   id="expired_day" placeholder="" name="expired_day">
-                                            <span class="fa fa-calendar-o form-control-feedback left"
-                                                  aria-hidden="true">
-                                        </span>
-                                            <span id="inputSuccess2Status2" class="sr-only">(success)</span>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <div class="ln_solid"></div>
-                                <div class="form-group">
-                                    <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                                        <button type="submit" class="btn btn-success">Thêm</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>--}}
                     </div>
                 </div>
             </div>
