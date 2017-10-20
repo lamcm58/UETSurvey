@@ -47,9 +47,11 @@ class PageController extends Controller
             ->groupBy('question_category')
             ->orderBy('id')
             ->get();
-        $detail = SurveyDetail::where('survey_id', $id)
+        $detail = SurveyDetail::join('surveys', 'surveys_details.survey_id', '=', 'surveys.id')
+            ->where('survey_id', $id)
             ->where('subject_id', $subject_id)
             ->where('student_id', Auth::id())
+            ->where('surveys.expired_day', '>=', date('Y-m-d H:i:s'))
             ->where('is_done', 1)->first();
 
         if (count($detail)>0) {
@@ -86,9 +88,11 @@ class PageController extends Controller
         Result::create($items);
 
         // update survey_detail property
-        $result = SurveyDetail::where('survey_id', $id)
+        $result = SurveyDetail::join('surveys', 'surveys_details.survey_id', '=', 'surveys.id')
+            ->where('survey_id', $id)
             ->where('subject_id', $subject_id)
             ->where('student_id', Auth::id())
+            ->where('surveys.expired_day', '>=', date('Y-m-d H:i:s'))
             ->first();
         $result->is_done = 1;
         $result->save();
@@ -100,7 +104,7 @@ class PageController extends Controller
     {
         $cate_id = Category::find($id)->id;
         $subjects = Subject::where('category_id', $id)->paginate(20);
-        $surveys = Survey::all();
+        $surveys = Survey::where('expired_day', '>=', date('Y-m-d H:i:s'))->get();
         if (Auth::guard('admin')->check()) {
             return view('admin.subject.list', compact('cate_id', 'subjects', 'surveys'));
         }

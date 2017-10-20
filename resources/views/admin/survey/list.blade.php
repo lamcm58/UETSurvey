@@ -22,7 +22,7 @@
                                     <th>Ngày hết hạn</th>
                                     <th>Xem</th>
                                     <th>Thống kê</th>
-                                    <th>Xóa</th>
+                                    {{--<th>Xóa</th>--}}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -32,10 +32,10 @@
                                         <tr>
                                             <td>{{ $i++ }}</td>
                                             <td>{{ str_replace(' ', '', $survey->survey_code) }} - {{ $survey->survey_name }}</td>
-                                            <td>{{ date("d-m-Y H:i:s", strtotime($survey->expired_day)) }}</td>
+                                            <td>{{ date("d-m-Y H:i:s", strtotime($survey->expired_day)) }}<br/>{{ ($survey->expired_day<date("Y-m-d H:i:s"))?'(Đã hết hạn)':'' }}</td>
                                             <td><a href="{{ route('survey.preview', $survey->id) }}" class="btn btn-info"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Xem</a></td>
                                             <td><a href="{{ route('survey.statistic', $survey->id) }}" class="btn btn-success"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Thống kê</a></td>
-                                            <td><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;Xóa</button></td>
+                                            {{--<td><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;Xóa</button></td>--}}
                                         </tr>
                                     @endforeach
                                 @else
