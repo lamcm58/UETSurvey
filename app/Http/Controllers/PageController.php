@@ -32,6 +32,7 @@ class PageController extends Controller
                     ->join('surveys', 'surveys_details.survey_id', '=', 'surveys.id')
                     ->where('subject_id', $id)
                     ->where('student_id', Auth::id())
+                    ->where('surveys.expired_day', '>=', date('Y-m-d H:i:s'))
                     ->get();
 
         return view('pages.subject.detail', compact('subject','selected'));
