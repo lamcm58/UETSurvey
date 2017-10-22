@@ -18,7 +18,7 @@
                             </div>
                         @endif
                         <div class="x_title">
-                            <h2><h4>{{ str_replace(' ', '', $subject->subject_class_code) }}
+                            <h2><h4>{{ $subject->course_id }}_{{ ListProperty::formatSubjectCode($subject->subject_class_code) }}
                                     - {{ $subject->name }} - {{ $subject->teacher_name }}</h4></h2>
                             <div class="clearfix"></div>
                         </div>

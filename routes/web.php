@@ -19,6 +19,8 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
     Route::get('/category/{id}', ['as' => 'category.view', 'uses' => 'PageController@viewCate']);
     Route::post('/category/{id}/addSurvey', ['as' => 'category.addSurvey', 'uses' => 'PageController@addSurvey']);
 
+    Route::post('/admin/updatePass', ['as' => 'admin.updatePass', 'uses' => 'HomeController@updatePass']);
+
     Route::group(['prefix' => 'subject'], function () {
         Route::get('/list', ['as' => 'subject.list', 'uses' => 'SubjectController@index']);
         Route::get('/add', ['as' => 'subject.add', 'uses' => 'SubjectController@add']);
@@ -59,6 +61,8 @@ Route::group(['domain' => 'my-survey.com', 'middleware' => 'checkAuthUser'], fun
     Route::get('/subject/{id}', ['as' => 'subjectDetail', 'uses' => 'PageController@detail']);
     Route::get('/subject/{subject_id}/survey/{id}', ['as' => 'preview', 'uses' => 'PageController@preview']);
     Route::post('/subject/{subject_id}/survey/{id}', ['as' => 'doSurvey', 'uses' => 'PageController@doSurvey']);
+
+    Route::post('/student/updatePass', ['as' => 'student.updatePass', 'uses' => 'StudentController@updatePass']);
 });
 
 Route::get('/login', ['as' => 'getLogin', 'uses' => 'Auth\LoginController@getLogin']);

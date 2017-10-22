@@ -40,7 +40,7 @@
                         <ul class="nav child_menu">
                         <?php $items = ListProperty::getListSubjects(); ?>
                         @foreach($items as $item)
-                            <li><a href="{{ route('subjectDetail', $item->subject_id) }}">{{ $item->name }} ({{ $item->subject_class_code }})</a></li>
+                            <li><a href="{{ route('subjectDetail', $item->subject_id) }}">{{ $item->course_id }}_{{ ListProperty::formatSubjectCode($item->subject_class_code) }}_{{ $item->name }}</a></li>
                         @endforeach
                         </ul>
                     </li>

@@ -1,5 +1,5 @@
 <h2>Danh sách sinh viên chưa làm khảo sát</h2>
-<h3>{{ $survey->survey_name }} - {{ $subject->name }}_{{ $subject->subject_class_code }}</h3>
+<h3>{{ $survey->survey_name }} - {{ $subject->course_id }}_{{ ListProperty::formatSubjectCode($subject->subject_class_code) }}</h3>
 <table class="table table-striped table-bordered dt-responsive nowrap"
        cellspacing="0" width="100%">
     <thead>

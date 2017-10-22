@@ -28,6 +28,11 @@ class SubjectController extends Controller
         return view('admin.subject.add', compact('categories'));
     }
 
+    /**
+     * Import list subjects from excel file
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function importExcel(Request $request)
     {
         if ($request->hasFile('subject_file')) {
@@ -44,6 +49,7 @@ class SubjectController extends Controller
                                 'code' => $v['code'], 
                                 'name' => $v['name'],
                                 'subject_class_code' => $v['subject_class_code'],
+                                'course_id' => $v['course_id'],
                                 'teacher_name' => $v['teacher_name'],
                                 'category_id' => getCategoryId($v['category'])
                             ];
@@ -67,6 +73,11 @@ class SubjectController extends Controller
         return back()->with('error', 'Có lỗi xảy ra. Vui lòng kiểm tra lại file của bạn.');
     }
 
+    /**
+     * Subject details(survey list and students list)
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function detail($id)
     {
         $subject = Subject::find($id);
@@ -83,6 +94,11 @@ class SubjectController extends Controller
         return view('admin.subject.detail', compact('subject','selected', 'surveys', 'students'));
     }
 
+    /**
+     * Add subject
+     * @param SubjectRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function addSubject(SubjectRequest $request)
     {
         $subject = [];
@@ -93,6 +109,12 @@ class SubjectController extends Controller
         $subject['category_id'] = $request->category_id;
 
         Subject::insert($subject);
+
+        $sbj = Subject::orderBy('id', 'DESC')->first();
+        $last_id = $sbj->id;
+        $tmp_subject = Subject::find($last_id-1);
+        $sbj->course_id = $tmp_subject->course_id;
+        $sbj->save();
 
         $data = [];
         $data['time'] = date('Y-m-d H:i:s');

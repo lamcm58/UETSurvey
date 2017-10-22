@@ -1,5 +1,5 @@
 @if(isset($subject))
-    <h1>Thống kê môn học - {{ $subject->name.'_'.$subject->subject_class_code }}</h1>
+    <h1>Thống kê môn học - {{ $subject->course_id }}_{{ ListProperty::formatSubjectCode($subject->subject_class_code) }}</h1>
 @else
     <h1>Thống kê - {{ $category->category_name }}</h1>
 @endif

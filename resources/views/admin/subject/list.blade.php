@@ -60,7 +60,7 @@
                                             <td>{{ $item->id }}</td>
                                             <td>{{ $item->code }}</td>
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->subject_class_code }}</td>
+                                            <td>{{ $item->course_id }}_{{ ListProperty::formatSubjectCode($item->subject_class_code) }}</td>
                                             <td>{{ $item->teacher_name }}</td>
                                             <td><a href="{{ route('subject.detail', $item->id) }}" class="btn btn-info"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Xem</a></td>
                                         </tr>

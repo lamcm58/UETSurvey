@@ -38,4 +38,11 @@ class ListProperty {
 
         return $result;
     }
+
+    public static function formatSubjectCode($code) {
+        $temp = str_replace(' ', '_', $code);
+        $result = substr($temp,0,3).'_'.substr($temp,3);
+
+        return $result;
+    }
 }

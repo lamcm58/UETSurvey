@@ -18,7 +18,7 @@
                             </div>
                         @endif
                         <div class="x_title">
-                            <h2>{{ $survey->survey_name }} - {{ $subject->name }}_{{ $subject->subject_class_code }}</h2>
+                            <h2>{{ $survey->survey_name }} - {{ $subject->course_id }}_{{ ListProperty::formatSubjectCode($subject->subject_class_code) }}_{{ $subject->name }}</h2>
                             <div class="clearfix"></div>
                         </div>
 

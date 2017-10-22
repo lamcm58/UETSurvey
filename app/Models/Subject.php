@@ -34,9 +34,9 @@ class Subject extends Model
 {
     protected $table = 'subjects';
 
-    protected $fillable = ['code', 'name', 'subject_class_code', 'student_quantity', 'teacher_name'];
+    protected $fillable = ['code', 'name', 'subject_class_code', 'course_id', 'teacher_name', 'category_id'];
 
-    public $timestamps = true;
+    public $timestamps = false;
 
     public function Category()
     {

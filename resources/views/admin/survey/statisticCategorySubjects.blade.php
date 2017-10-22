@@ -44,7 +44,7 @@
                                 <?php $i++;?>
                                 <tr>
                                     <td align="center">{{ $i }}</td>
-                                    <td style="width:50%;">{{ $subject->subject_class_code }}_{{ $subject->name }}_{{ $subject->teacher_name }}</td>
+                                    <td style="width:50%;">{{ $subject->course_id }}_{{ ListProperty::formatSubjectCode($subject->subject_class_code) }}_{{ $subject->name }}_{{ $subject->teacher_name }}</td>
                                     <td align="center"><a href="{{ route('survey.subject.studentsDone', [$survey->id, $subject->id]) }}">{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id,1) }}/{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id) }}</a></td>
                                     <td align="center"><a href="{{ route('survey.subject.studentsNotDone', [$survey->id, $subject->id]) }}">{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id,0) }}/{{ ListProperty::getTotalStudentDoSurvey($survey->id,$subject->id) }}</a></td>
                                     <td style="width:5%;"><a href="{{ route('survey.subjectStatistic', [$survey->id, $subject->id]) }}" class="btn btn-success"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Thống kê</a></td>

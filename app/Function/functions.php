@@ -35,7 +35,8 @@ function getScoreForOneSubject($result = []) {
 }
 
 function formatSubjectCode($code) {
-    $result = substr($code,0,3).'_'.substr($code,3,4).'_'.substr($code, 8);
+    $temp = str_replace(' ', '_', $code);
+    $result = substr($temp,0,3).'_'.substr($temp,3);
 
     return $result;
 }

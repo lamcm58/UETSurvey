@@ -78,7 +78,9 @@
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('assets-admin/admin/build/js/custom.min.js') }}"></script>
 
-    {{--<script src="{{ asset('assets-admin/datepicker/bootstrap-datepicker.js') }}"></script>--}}
+    <script type="text/javascript">
+        $('.alert').delay(3000).slideUp();
+    </script>
 
 	@yield('js')
 </body>
