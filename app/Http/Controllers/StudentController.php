@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\PasswordRequest;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class StudentController extends Controller
 {
@@ -20,7 +22,7 @@ class StudentController extends Controller
     }
 
     /**
-     * Import list students and subjects data for students from excel file
+     * Thêm danh sách sinh viên và thông tin đăng ký môn học
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -101,64 +103,43 @@ class StudentController extends Controller
         return view('admin.student.list', compact('students'));
     }
 
+    public function changePass()
+    {
+        return view('pages.password.changePass');
+    }
+
     /**
-     * Update pass word
+     * Đổi mật khẩu tài khoản quản trị
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updatePass(Request $request)
+    public function updatePass(PasswordRequest $request)
     {
         if (Auth::check()) {
-            $request_data = $request->all();
-            $validator = $this->admin_credential_rules($request_data);
-            if ($validator->fails()) {
-                $error = $validator->getMessageBag()->toArray();
-                return redirect()->back()->with('error', $error);
+            $current_password = Auth::User()->password;
+            if (Hash::check($request->current_password, $current_password)) {
+                $user_id = Auth::id();
+                $obj_user = Student::find($user_id);
+                $obj_user->password = Hash::make($request->password);
+                $obj_user->save();
+                $message = "Thay đổi mật khẩu thành công !";
+
+                $data = [];
+                $data['time'] = date('Y-m-d H:i:s');
+                $data['ip_address'] = \Request::getClientIp();
+                $data['actions'] = 'Student ' . Auth::user()->username . ' updated password successfully.';
+                History::insert($data);
+
+                return redirect()->back()->with('success', $message);
             } else {
-                $current_password = Auth::User()->password;
-                if (Hash::check($request_data['current-password'], $current_password)) {
-                    $user_id = Auth::id();
-                    $obj_user = Student::find($user_id);
-                    $obj_user->password = Hash::make($request_data['password']);
-                    $obj_user->save();
-                    $message = "Thay đổi mật khẩu thành công !";
-
-                    $data = [];
-                    $data['time'] = date('Y-m-d H:i:s');
-                    $data['ip_address'] = \Request::getClientIp();
-                    $data['actions'] = 'Student ' . Auth::user()->username . ' updated password successfully.';
-                    History::insert($data);
-
-                    return redirect()->back()->with('success', $message);
-                } else {
-                    $error = [
-                        'current-password' => 'Bạn phải nhập đúng mật khẩu cũ'
-                    ];
-                    return redirect()->back()->with('error', $error);
-                }
+                $error = [
+                    'current-password' => 'Bạn phải nhập đúng mật khẩu cũ'
+                ];
+                return redirect()->back()->with('error', $error);
             }
         } else {
             return redirect()->to('/');
         }
-    }
-
-    /**
-     * Rules for update password
-     * @param array $data
-     * @return \Illuminate\Validation\Validator
-     */
-    public function admin_credential_rules(array $data)
-    {
-        $messages = [
-            'current-password.required' => 'Bạn phải nhập mật khẩu cũ',
-            'password.required' => 'Bạn phải nhập mật khẩu'
-        ];
-        $validator = Validator::make($data, [
-            'current-password' => 'required',
-            'password' => 'required|same:password',
-            'password_confirmation' => 'required|same:password'
-        ], $messages);
-        return $validator;
     }
 
 }

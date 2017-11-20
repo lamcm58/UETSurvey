@@ -29,7 +29,7 @@ class SubjectController extends Controller
     }
 
     /**
-     * Import list subjects from excel file
+     * Thêm danh sách môn học bằng file
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -74,7 +74,7 @@ class SubjectController extends Controller
     }
 
     /**
-     * Subject details(survey list and students list)
+     * Chi tiết môn học(danh sách khảo sát và danh sách sinh viên)
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -95,7 +95,7 @@ class SubjectController extends Controller
     }
 
     /**
-     * Add subject
+     * Thêm môn học thủ công (thêm từng môn)
      * @param SubjectRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */

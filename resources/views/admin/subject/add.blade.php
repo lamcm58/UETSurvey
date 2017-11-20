@@ -41,21 +41,21 @@
                                 {{ csrf_field() }}
                                 <div class="x_panel">
                                     <div class="form-group">
-                                        <label for="code">Mã môn học</label>
-                                        <input type="text" name="code" class="form-control" id=code" placeholder="Mã môn học">
+                                        <label for="code">Mã môn học <span style="color: red;">*</span></label>
+                                        <input type="text" name="code" class="form-control" id="code" placeholder="Mã môn học">
                                         @if($errors->first('code'))
                                             <p class="text-danger">{{$errors->first('code')}}</p>
                                         @endif
                                     </div>
                                     <div class="form-group">
-                                        <label for="name">Tên môn học</label>
+                                        <label for="name">Tên môn học <span style="color: red;">*</span></label>
                                         <input type="text" name="name" class="form-control" id="name" placeholder="Tên môn học">
                                         @if($errors->first('name'))
                                             <p class="text-danger">{{$errors->first('name')}}</p>
                                         @endif
                                     </div>
                                     <div class="form-group">
-                                        <label for="category">Thuộc khoa</label>
+                                        <label for="category">Thuộc khoa <span style="color: red;">*</span></label>
                                         <select name="category_id" id="category" class="form-control">
                                             <option value="">Chọn khoa</option>
                                             @foreach($categories as $category)
@@ -67,7 +67,7 @@
                                         @endif
                                     </div>
                                     <div class="form-group">
-                                        <label for="teacher_name">Giảng viên</label>
+                                        <label for="teacher_name">Giảng viên <span style="color: red;">*</span></label>
                                         <input type="text" name="teacher_name" class="form-control" id="teacher_name" placeholder="Giảng viên">
                                         @if($errors->first('teacher_name'))
                                             <p class="text-danger">{{$errors->first('teacher_name')}}</p>

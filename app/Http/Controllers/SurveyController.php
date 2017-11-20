@@ -33,6 +33,11 @@ class SurveyController extends Controller
         return view('admin.survey.add', compact('subjects'));
     }
 
+    /**
+     * Thêm khảo sát bằng file
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function importFile(Request $request)
     {
         if ($request->hasFile('text_file')) {
@@ -76,36 +81,20 @@ class SurveyController extends Controller
             $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' added survey successfully.';
             History::insert($data);
 
-            return back()->with('success', 'Thêm khảo sát thành công.');
+            return redirect(route('survey.list'))->with('success', 'Thêm khảo sát thành công.');
         }
 
         return back()->with('error', 'Có lỗi xảy ra. Vui lòng kiểm tra lại file của bạn.');
     }
 
-    public function create(Request $request)
-    {
-        $survey = Survey::orderBy('id', 'DESC')->first();
-        if (isset($survey)) {
-            $ordinal = $survey->id + 1;
-        } else {
-            $ordinal = 1;
-        }
-        $surveys = [];
-        $surveys['survey_code'] = 'SS' . str_pad($ordinal, 4, '0', STR_PAD_LEFT);
-        $surveys['survey_name'] = $request->survey_name;
-        $surveys['expired_day'] = date('Y-m-d 23:59:59', strtotime($request->expired_day));
-        $save = Survey::create($surveys);
-
-        if ($save) {
-            return back()->with('success', 'Add survey successful.');
-        } else {
-            return back()->with('error', 'Please Check your file, Something is wrong there.');
-        }
-    }
-
+    /**
+     * Xem trước khảo sát
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function preview($id)
     {
-        $item = Survey::find($id);
+        $survey = Survey::find($id);
         $question_categories = Question::select('question_category')
             ->where('survey_id', $id)
             ->groupBy('question_category')
@@ -114,9 +103,15 @@ class SurveyController extends Controller
         $students = Student::all();
         $categories = Category::all();
 
-        return view('admin.survey.preview', compact('item', 'question_categories', 'students', 'categories'));
+        return view('admin.survey.preview', compact('survey', 'question_categories', 'students', 'categories'));
     }
 
+    /**
+     * Phân quyền những môn nào được làm khảo sát
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function grantCategory(Request $request, $id)
     {
         $category_id = $request->cat_id;
@@ -129,7 +124,7 @@ class SurveyController extends Controller
 
         if (count($categories) > 0) {
 
-            return back()->with('error', 'Xin lỗi. Khảo sát đã được thêm cho tất cả các môn học này.');
+            return back()->with('error', 'Xin lỗi. Khảo sát đã được thêm cho tất cả các môn học của khoa này.');
         } else {
             if (count($details) > 0) {
                 foreach ($details as $detail) {
@@ -161,6 +156,11 @@ class SurveyController extends Controller
         }
     }
 
+    /**
+     * Danh sách thống kê các khoa
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function statistic($id)
     {
         $survey = Survey::find($id);
@@ -171,6 +171,12 @@ class SurveyController extends Controller
         return view('admin.survey.statistic', compact('survey', 'subjects', 'categories'));
     }
 
+    /**
+     * Danh sách thống kê các môn trong khoa
+     * @param $id
+     * @param $cat_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function statisticCategorySubjects($id, $cat_id)
     {
         $survey = Survey::find($id);
@@ -181,6 +187,12 @@ class SurveyController extends Controller
         return view('admin.survey.statisticCategorySubjects', compact('survey', 'subjects', 'categories'));
     }
 
+    /**
+     * Xem thống kê khảo sát theo môn
+     * @param $id
+     * @param $subject_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function subjectStatistic($id, $subject_id)
     {
         $question_categories = Question::select('question_category')
@@ -202,6 +214,11 @@ class SurveyController extends Controller
         return view('admin.survey.subjectStatistic', compact('question_categories', 'survey', 'subject', 'results', 'studentsNotDone'));
     }
 
+    /**
+     * Xuất thống kê khảo sát theo môn ra file
+     * @param $id
+     * @param $subject_id
+     */
     public function export($id, $subject_id)
     {
         $question_categories = Question::select('question_category')
@@ -225,6 +242,11 @@ class SurveyController extends Controller
         })->download('xlsx');
     }
 
+    /**
+     * Xuất thống kê khảo sát theo khoa ra file
+     * @param $id
+     * @param $cat_id
+     */
     public function exportStat($id, $cat_id)
     {
         $category = Category::find($cat_id);
@@ -266,6 +288,12 @@ class SurveyController extends Controller
         })->download('xlsx');
     }
 
+    /**
+     * Xem thống kê khảo sát theo khoa
+     * @param $id
+     * @param $category_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function statisticCategory($id, $category_id)
     {
         $question_categories = Question::select('question_category')
@@ -284,6 +312,12 @@ class SurveyController extends Controller
         return view('admin.survey.categoryStatistic', compact('question_categories', 'survey', 'category', 'results'));
     }
 
+    /**
+     * Xem danh sách sinh viên đã làm khảo sát
+     * @param $id
+     * @param $subject_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function studentsNotDone($id, $subject_id)
     {
         $survey = Survey::find($id);
@@ -296,6 +330,12 @@ class SurveyController extends Controller
         return view('admin.survey.studentsNotDone', compact('survey', 'subject', 'studentsNotDone'));
     }
 
+    /**
+     * Xem danh sách sinh viên đã làm khảo sát
+     * @param $id
+     * @param $subject_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function studentsDone($id, $subject_id)
     {
         $survey = Survey::find($id);
@@ -308,6 +348,11 @@ class SurveyController extends Controller
         return view('admin.survey.studentsDone', compact('survey', 'subject', 'studentsDone'));
     }
 
+    /**
+     * Xuất danh sách sinh viên chưa làm khảo sát ra file
+     * @param $id
+     * @param $subject_id
+     */
     public function exportList($id, $subject_id)
     {
         $survey = Survey::find($id);
@@ -324,5 +369,35 @@ class SurveyController extends Controller
             });
 
         })->download('xlsx');
+    }
+
+    public function edit($id)
+    {
+        $survey = Survey::find($id);
+        $questions = Question::where('survey_id', $id)->get();
+
+        return view('admin.survey.edit', compact('survey', 'questions'));
+    }
+
+    /**
+     * Chỉnh sửa thông tin khảo sát
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update($id, Request $request)
+    {
+        $survey = Survey::find($id);
+        $survey->survey_name = $request->survey_name;
+        $survey->expired_day = date('Y-m-d 23:59:59', strtotime($request->expired_day));
+        $survey->save();
+
+        $data = [];
+        $data['time'] = date('Y-m-d H:i:s');
+        $data['ip_address'] = \Request::getClientIp();
+        $data['actions'] = 'Admin '. Auth::guard('admin')->user()->username .' update survey no '. $id .' successfully.';
+        History::insert($data);
+
+        return redirect(route('survey.preview', $id))->with('success', 'Cập nhật khảo sát thành công');
     }
 }

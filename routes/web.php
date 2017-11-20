@@ -19,7 +19,14 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
     Route::get('/category/{id}', ['as' => 'category.view', 'uses' => 'PageController@viewCate']);
     Route::post('/category/{id}/addSurvey', ['as' => 'category.addSurvey', 'uses' => 'PageController@addSurvey']);
 
+    Route::get('/admin/changePass', ['as' => 'admin.changePass', 'uses' => 'HomeController@changePass']);
     Route::post('/admin/updatePass', ['as' => 'admin.updatePass', 'uses' => 'HomeController@updatePass']);
+
+    Route::get('/survey/{id}/question/add', ['as' => 'question.add', 'uses' => 'QuestionController@add']);
+    Route::post('/survey/{id}/question/create', ['as' => 'question.create', 'uses' => 'QuestionController@create']);
+    Route::get('/survey/{id}/question/{question_id}', ['as' => 'question.edit', 'uses' => 'QuestionController@edit']);
+    Route::post('/survey/{id}/question/{question_id}/update', ['as' => 'question.update', 'uses' => 'QuestionController@update']);
+    Route::post('/question/{id}/delete', ['as' => 'question.delete', 'uses' => 'QuestionController@delete']);
 
     Route::group(['prefix' => 'subject'], function () {
         Route::get('/list', ['as' => 'subject.list', 'uses' => 'SubjectController@index']);
@@ -36,6 +43,8 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::post('/importFile', ['as' => 'survey.import', 'uses' => 'SurveyController@importFile']);
         Route::post('/create', ['as' => 'survey.create', 'uses' => 'SurveyController@create']);
         Route::get('/{id}/preview', ['as' => 'survey.preview', 'uses' => 'SurveyController@preview']);
+        Route::get('/{id}/edit', ['as' => 'survey.edit', 'uses' => 'SurveyController@edit']);
+        Route::post('/{id}/update', ['as' => 'survey.update', 'uses' => 'SurveyController@update']);
         Route::post('/{id}/grantSubject', ['as' => 'survey.grantCategory', 'uses' => 'SurveyController@grantCategory']);
         Route::get('/{id}/statistic', ['as' => 'survey.statistic', 'uses' => 'SurveyController@statistic']);
         Route::get('/{id}/statistic/category/{cat_id}/subjects', ['as' => 'survey.statisticCategory.subjects', 'uses' => 'SurveyController@statisticCategorySubjects']);
@@ -47,6 +56,7 @@ Route::group(['domain' => 'admin.my-survey.com', 'middleware' => 'checkAuth'], f
         Route::get('/{id}/statistic/subject/{subject_id}/studentsDone', ['as' => 'survey.subject.studentsDone', 'uses' => 'SurveyController@studentsDone']);
         Route::get('/exportList/{survey_id}/{subject_id}', ['as' => 'survey.exportList', 'uses' => 'SurveyController@exportList']);
     });
+
     Route::group(['prefix' => 'student'], function () {
         Route::get('/list', ['as' => 'student.list', 'uses' => 'StudentController@index']);
         Route::get('/add', ['as' => 'student.add', 'uses' => 'StudentController@add']);
@@ -62,6 +72,7 @@ Route::group(['domain' => 'my-survey.com', 'middleware' => 'checkAuthUser'], fun
     Route::get('/subject/{subject_id}/survey/{id}', ['as' => 'preview', 'uses' => 'PageController@preview']);
     Route::post('/subject/{subject_id}/survey/{id}', ['as' => 'doSurvey', 'uses' => 'PageController@doSurvey']);
 
+    Route::get('/student/changePass', ['as' => 'student.changePass', 'uses' => 'StudentController@changePass']);
     Route::post('/student/updatePass', ['as' => 'student.updatePass', 'uses' => 'StudentController@updatePass']);
 });
 

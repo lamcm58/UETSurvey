@@ -56,12 +56,12 @@
                     </li>
                     <li>
                         <a>
-                            <i class="fa fa-align-right"></i> Quản lý survey
+                            <i class="fa fa-align-right"></i> Quản lý khảo sát
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
-                            <li><a href="{{ route('survey.add') }}">Thêm survey</a></li>
-                            <li><a href="{{ route('survey.list') }}">Danh sách survey</a></li>
+                            <li><a href="{{ route('survey.add') }}">Thêm khảo sát</a></li>
+                            <li><a href="{{ route('survey.list') }}">Danh sách khảo sát</a></li>
                         </ul>
                     </li>
                     <li>

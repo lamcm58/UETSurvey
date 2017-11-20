@@ -18,7 +18,7 @@
                             </div>
                         @endif
                         <div class="x_title">
-                            <h2>{{ $item->survey_name }}</h2>
+                            <h2>{{ $survey->survey_name }}</h2>
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_title">
@@ -27,7 +27,7 @@
 
                             <div class="x_panel">
                             <h4>Chọn theo khoa</h4>
-                            <form action="{{ route('survey.grantCategory', $item->id) }}" method="post">
+                            <form action="{{ route('survey.grantCategory', $survey->id) }}" method="post">
                             {{ csrf_field() }}
                                 <div class="col-md-4">
                                     <select name="cat_id" id="" class="form-control">
@@ -96,6 +96,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            <a href="{{ route('survey.edit', $survey->id) }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Chỉnh sửa</a>
                         </div>
                     </div>
                 </div>

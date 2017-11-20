@@ -26,7 +26,7 @@
                         <div class="x_content">
                             <form action="{{ route('category.addSurvey', $cate_id) }}" method="post">
                                 {{ csrf_field() }}
-                                <h4>Thêm survey cho các môn học của khoa</h4>
+                                <h4>Thêm khảo sát cho các môn học của khoa</h4>
                                 <div class="col-md-6">
                                     <select name="survey_id" id="" class="form-control" required>
                                         <option value="">Chọn survey</option>

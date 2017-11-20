@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller
 {
+    /**
+     * Hiển thị danh sách môn học đã đăng ký của sinh viên
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
     	$data = StudentSubject::join('subjects', 'students_subjects.subject_id', '=', 'subjects.id')->where('student_id', Auth::user()->id)->get();
@@ -25,6 +29,11 @@ class PageController extends Controller
         }
     }
 
+    /**
+     * Xem chi tiết môn học (danh sách khảo sát)
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function detail($id)
     {
     	$subject = Subject::find($id);
@@ -38,6 +47,12 @@ class PageController extends Controller
         return view('pages.subject.detail', compact('subject','selected'));
     }
 
+    /**
+     * Truy cập vào trang khảo sát để làm khảo sát
+     * @param $subject_id
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function preview($subject_id, $id)
     {
         $subject = Subject::find($subject_id);
@@ -69,6 +84,13 @@ class PageController extends Controller
         return view('pages.survey.preview', compact('item', 'question_categories', 'subject', 'check', 'result'));
     }
 
+    /**
+     * Tiến hành làm khảo sát
+     * @param Request $request
+     * @param $subject_id
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function doSurvey(Request $request, $subject_id, $id)
     {
         $student = Student::find(Auth::id());
@@ -100,6 +122,11 @@ class PageController extends Controller
         return redirect()->route('subjectDetail', $subject_id)->with('success', 'Cảm ơn các phản hồi của bạn.');
     }
 
+    /**
+     * Xem danh sách các môn học thuộc khoa
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function viewCate($id)
     {
         $cate_id = Category::find($id)->id;
@@ -111,6 +138,12 @@ class PageController extends Controller
         return view('pages.subject.list', compact('cate_id', 'subjects', 'surveys'));
     }
 
+    /**
+     * Thêm khảo sát cho các môn học của khoa
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function addSurvey(Request $request, $id)
     {
         if (Auth::guard('admin')->check()) {

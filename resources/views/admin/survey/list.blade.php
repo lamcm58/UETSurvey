@@ -6,9 +6,20 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
+                        @if ($message = Session::get('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ Session::get('success') }}
+                            </div>
+                        @endif
+
+                        @if ($message = Session::get('error'))
+                            <div class="alert alert-danger" role="alert">
+                                {{ Session::get('error') }}
+                            </div>
+                        @endif
                         <div class="x_title">
                             <h2>
-                                Danh sách survey
+                                Danh sách khảo sát
                             </h2>
                             <div class="clearfix"></div>
                         </div>
@@ -18,7 +29,7 @@
                                 <thead>
                                 <tr>
                                     <th>STT</th>
-                                    <th>Tên survey</th>
+                                    <th>Tên khảo sát</th>
                                     <th>Ngày hết hạn</th>
                                     <th>Xem</th>
                                     <th>Thống kê</th>
@@ -39,7 +50,7 @@
                                         </tr>
                                     @endforeach
                                 @else
-                                    <td colspan="6">Hiện chưa có survey nào.</td>
+                                    <td colspan="6">Hiện chưa có khảo sát nào.</td>
                                 @endif
                                 </tbody>
                             </table>

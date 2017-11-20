@@ -24,17 +24,30 @@
                         </div>
                         <div class="x_content">
                             <!-- Danh sách survey -->
-                            <h3>Danh sách survey</h3>
+                            <h3>Danh sách khảo sát</h3>
                             <hr>
-                            <ul>
                             @if(count($selected)>0)
+                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                   cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên khảo sát</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php $i = 1;?>
                                 @foreach($selected as $item)
-                                    <li><a href="{{ route('preview', [$subject->id, $item->survey_id]) }}"><h4>{{ $item->survey_name }}</h4></a></li>
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td><a href="{{ route('preview', [$subject->id, $item->survey_id]) }}">{{ $item->survey_name }}</a></td>
+                                    </tr>
                                 @endforeach
+                                </tbody>
+                            </table>
                             @else
-                                <h4>Hiện tại môn học này chưa có survey nào cả.</h4>
+                                <td colspan="2">Hiện tại môn học này chưa có khảo sát nào cả.</td>
                             @endif
-                            </ul>
 
                             <!-- End -->
                         </div>

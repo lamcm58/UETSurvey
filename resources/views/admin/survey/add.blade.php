@@ -18,7 +18,7 @@
                     @endif
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Thêm survey</h2>
+                            <h2>Thêm khảo sát</h2>
                             <div class="clearfix"></div>
                         </div>
                         {{--Thêm survey bằng file text--}}
